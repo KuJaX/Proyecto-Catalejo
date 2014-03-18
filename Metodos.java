@@ -64,16 +64,17 @@ public class Metodos {
 					if(esMayuscula(caracter) || caracter == ' ') {
 						switch(caracter) {
 							case ' ':
-                                                                   tiempoTotal = "";
-                                                                   char tiempo;
-                                                                   
-                                                                   while(true) {
-										tiempo = linea.charAt(n+1);
-										if(tiempo=='s') break;
-                                                                                else tiempoTotal += tiempo;
-                                                                                }
-                                                                
-                                                                   break;
+                                                                       tiempoTotal = "";
+                                                                       char tiempo;
+                                                                       while (true) {
+                                                                       	n++;
+                                                                       	tiempo = linea.charAt(n);
+                                                                       	if (tiempo == 's') {
+                                                                       		break;
+                                                                       		} 
+                                                                       else tiempoTotal += tiempo
+                                                                       }
+                                                                       break;
 
 							case 'G':
 								if(caracterSiguiente=='p') n++;
