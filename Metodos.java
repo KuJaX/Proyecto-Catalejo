@@ -143,7 +143,7 @@ public class Metodos {
 					System.out.println(linea+" - "+tipo+":"+repeticiones+" - "+color+" - "+tiempoTotal);
 				}
 
-				//lista.add(new Faro(txt, color, repeticiones, segundos));
+				lista.add(new Faro(tipo, repeticiones, color, tiempoTotal));
 
 				linea = br.readLine();
 			}
@@ -152,7 +152,7 @@ public class Metodos {
 
 			ObjectOutputStream salida;
 			try {
-				salida = new ObjectOutputStream(new FileOutputStream("media.obj"));
+				salida = new ObjectOutputStream(new FileOutputStream("faro.obj"));
 
 				for (Faro r : lista) {
 					salida.writeObject(r);
