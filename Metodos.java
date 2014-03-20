@@ -64,18 +64,23 @@ public class Metodos {
 					if(esMayuscula(caracter) || caracter == ' ') {
 						switch(caracter) {
 							case ' ':
-                                                                       tiempoTotal = "";
-                                                                       char tiempo;
-                                                                       while (true) {
-                                                                       	n++;
-                                                                       	tiempo = linea.charAt(n);
-                                                                       	if (tiempo == 's') {
-                                                                       		break;
-                                                                       		} 
-                                                                       else tiempoTotal += tiempo
-                                                                       }
-                                                                       break;
-
+				                                tiempoTotal = "";
+				                                char tiempo;
+				
+				                                while (true) {
+				                                    n++;
+				                                    try {
+				                                        tiempo = linea.charAt(n);
+				                                        if (tiempo == 's') {
+				                                            break;
+				                                        } 
+				                                        else tiempoTotal += tiempo;
+				                                    } catch (Exception e) {
+				                                        break;
+				                                    }
+				                                }
+				
+				                                break;
 							case 'G':
 								if(caracterSiguiente=='p') n++;
 								else System.out.println("Error, Gp chungo: "+linea+", "+caracter);
