@@ -1,11 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
-
 import java.io.Serializable;
 
 /**
@@ -13,13 +5,13 @@ import java.io.Serializable;
  * @author alejandropoloavila
  */
 public class Faro implements Serializable {
-    private StringBuffer tipo;
-    private StringBuffer color;
+    private String tipo;
+    private String color;
    
-    private int repeticiones;
-    private int tT;
+    private String repeticiones;
+    private String tT;
 
-    public Faro(StringBuffer tipo, StringBuffer color, int repeticiones, int tT) {
+    public Faro(String tipo, String color, String repeticiones, String tT) {
         this.tipo = tipo;
         this.color = color;
         this.repeticiones = repeticiones;
@@ -27,19 +19,19 @@ public class Faro implements Serializable {
         
     }
     
-    public StringBuffer getTipo() {
+    public String getTipo() {
         return tipo;
     }
     
-    public StringBuffer getColor() {
+    public String getColor() {
         return color;
     }
 
-    public int getRepeticiones() {
+    public String getRepeticiones() {
         return repeticiones;
     }
     
-    public int gettT() {
+    public String gettT() {
         return tT;
     }
     
@@ -48,3 +40,4 @@ public class Faro implements Serializable {
     }
 
 }
+
