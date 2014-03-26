@@ -1,3 +1,4 @@
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -10,21 +11,25 @@ public class Metodos_Filtro {
     public String filtro (String nombre){
         
         try{
-            ObjectInputStream entrada=new ObjectInputStream
-            (new FileInputStream("faros.obj"));
-
-            while (entrada.available()>0){
-                Faro faros = (Faro) entrada.readObject();
-                
-                    System.out.println(faros);
-                
-            entrada.close();
+        ObjectInputStream entrada=new ObjectInputStream
+        (new FileInputStream("faros.obj"));
+        
+        try{
+        ArrayList faros = (ArrayList)entrada.readObject();
+        String tiempo = "10s";
+        int pos = faros.indexOf(tiempo);
+        if(pos!=-1)
+            System.out.println(tiempo + " se ha encontrado en la posición: "+pos);
+        else
+            System.out.println(tiempo + " no se ha encontrado");
+        }
+        catch (ClassNotFoundException ex) {
+                Logger.getLogger(Metodos_Filtro.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } 
-        catch (IOException ex) {
-            Logger.getLogger(Metodos_Filtro.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Metodos_Filtro.class.getName()).log(Level.SEVERE, null, ex);
+        entrada.close();
+        }
+        catch (IOException e) {
+            System.out.println("Error:" + e.getMessage());
         }
         
         return null;
