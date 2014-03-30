@@ -1,4 +1,5 @@
 import java.text.Normalizer;
+import java.util.ArrayList;
 
 
 public class Conversor {
@@ -16,10 +17,15 @@ public class Conversor {
     
     public static void main(String[] args) {
         
-     Metodos a = new Metodos();
+        Metodos a = new Metodos();
      
-     a.leer("codigos.txt");
+        ArrayList<Resultado> faros = a.leer("codigos.txt");
+        System.out.println("Todos los faros:");
+        System.out.println(faros);
      
+        ArrayList<Resultado> resultados = a.filtrarPorTiempo(faros, 7, 2);
+        System.out.println("Faros filtrados:");
+        System.out.println(resultados);
      
      
     /*
