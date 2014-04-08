@@ -32,7 +32,7 @@ public class Metodos {
         for (Resultado r : res){
             Faro f = r.getFaro();
             
-            if(repeticiones-margen<=f.getTiempoTotal() && repeticiones+margen>=f.getTiempoTotal()){
+            if(repeticiones-margen<=f.getRepeticiones()&& repeticiones+margen>=f.getRepeticiones()){
                 r.addIndice(1-Math.abs(repeticiones-f.getRepeticiones())/margen);
                 resultados.add(r);
             }
@@ -92,7 +92,8 @@ public class Metodos {
                 String color = "";
                 String segundos = "";
                 String repeticiones = "1";
-                String tiempoTotal = "0";
+                String tiempoTotal = "0"; 
+                int numeroDeDestellos = 0;
                 int n = 0;
 
                 System.out.println(linea);
@@ -152,15 +153,30 @@ public class Metodos {
                                 if (linea.charAt(n + 1) == '(') {
                                     repeticiones = "";
                                     char parte;
-
+                                    String cadena;
+                                    int numero;
+                                    
                                     while (true) {
                                         n++;
                                         parte = linea.charAt(n + 1);
                                         if (parte == ')') {
                                             break;
                                         }
+                                        if(parte == '+') { 
+                                            parte = linea.charAt(n + 2);
+                                            cadena = "" + parte;
+                                            numero = Integer.parseInt(cadena);
 
-                                        repeticiones += parte;
+                                            numeroDeDestellos += numero;
+                                            repeticiones = Integer.toString(numeroDeDestellos);
+                                            break;
+                                        }
+                                        cadena = "" + parte;
+                                        numero = Integer.parseInt(cadena);
+
+                                        numeroDeDestellos += numero;
+                                        repeticiones = Integer.toString(numeroDeDestellos);
+                                        
                                     }
 
                                 }
@@ -191,6 +207,7 @@ public class Metodos {
 
                     n++;
                     System.out.println(linea + " - " + tipo + ":" + repeticiones + " - " + color + " - " + tiempoTotal);
+                
                 }
                 Faro f = new Faro(tipo, Integer.parseInt(repeticiones), color, Double.parseDouble(tiempoTotal));
 		lista.add(new Resultado(f));
@@ -222,4 +239,5 @@ public class Metodos {
         return lista;
     }
 }
+
 
