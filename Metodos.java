@@ -17,12 +17,53 @@ public class Metodos {
         ArrayList<Resultado> resultados = new ArrayList<Resultado>();
         for (Resultado r : res){
             Faro f = r.getFaro();
+            
             if(tiempo-margen<=f.getTiempoTotal() && tiempo+margen>=f.getTiempoTotal()){
                 r.addIndice(1-Math.abs(tiempo-f.getTiempoTotal())/margen);
                 resultados.add(r);
             }
         }
         
+        return resultados;
+    }
+    
+     public ArrayList<Resultado> filtrarPorRepeticiones(ArrayList<Resultado> res, int repeticiones, double margen){
+        ArrayList<Resultado> resultados = new ArrayList<Resultado>();
+        for (Resultado r : res){
+            Faro f = r.getFaro();
+            
+            if(repeticiones-margen<=f.getTiempoTotal() && repeticiones+margen>=f.getTiempoTotal()){
+                r.addIndice(1-Math.abs(repeticiones-f.getRepeticiones())/margen);
+                resultados.add(r);
+            }
+        }
+        
+        return resultados;
+    }
+    
+    public ArrayList<Resultado> filtrarPorTipo(ArrayList<Resultado> res, int repeticiones, double margen){
+        ArrayList<Resultado> resultados = new ArrayList<Resultado>();
+        for (Resultado r : res){
+            Faro f = r.getFaro();
+            String destello = "D";
+            String ocultaciones = "Oc";
+            double repeticionesPorMinuto = (repeticiones*60)/f.getTiempoTotal();
+            
+            if(repeticionesPorMinuto<60 && f.getTipo().equalsIgnoreCase(destello) ||
+               repeticionesPorMinuto<60 && f.getTipo().equalsIgnoreCase(ocultaciones)){
+                r.addIndice(1-Math.abs(repeticionesPorMinuto-59)/margen);
+                resultados.add(r);
+                
+                }
+            else if(repeticionesPorMinuto>=60 && repeticionesPorMinuto<120){
+                r.addIndice(1-Math.abs(repeticionesPorMinuto-119)/margen);
+                resultados.add(r);
+                }
+            else if(repeticionesPorMinuto>=120){
+                r.addIndice(1);
+                resultados.add(r);
+                }
+            }
         return resultados;
     }
 
@@ -151,7 +192,7 @@ public class Metodos {
                     n++;
                     System.out.println(linea + " - " + tipo + ":" + repeticiones + " - " + color + " - " + tiempoTotal);
                 }
-                Faro f = new Faro(tipo, repeticiones, color, Double.parseDouble(tiempoTotal));
+                Faro f = new Faro(tipo, Integer.parseInt(repeticiones), color, Double.parseDouble(tiempoTotal));
 		lista.add(new Resultado(f));
                 linea = br.readLine();
             }
@@ -181,3 +222,4 @@ public class Metodos {
         return lista;
     }
 }
+
