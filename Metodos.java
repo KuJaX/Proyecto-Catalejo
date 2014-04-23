@@ -12,61 +12,6 @@ import java.util.logging.Logger;
 public class Metodos {
     
     private static final String mayusculas = "QWERTYUIOPLKJHGFDSAZXCVBNM";
-    
-    public ArrayList<Resultado> filtrarPorTiempo(ArrayList<Resultado> res, double tiempo, double margen){
-        ArrayList<Resultado> resultados = new ArrayList<Resultado>();
-        for (Resultado r : res){
-            Faro f = r.getFaro();
-            
-            if(tiempo-margen<=f.getTiempoTotal() && tiempo+margen>=f.getTiempoTotal()){
-                r.addIndice(1-Math.abs(tiempo-f.getTiempoTotal())/margen);
-                resultados.add(r);
-            }
-        }
-        
-        return resultados;
-    }
-    
-     public ArrayList<Resultado> filtrarPorRepeticiones(ArrayList<Resultado> res, int repeticiones, double margen){
-        ArrayList<Resultado> resultados = new ArrayList<Resultado>();
-        for (Resultado r : res){
-            Faro f = r.getFaro();
-            
-            if(repeticiones-margen<=f.getRepeticiones()&& repeticiones+margen>=f.getRepeticiones()){
-                r.addIndice(1-Math.abs(repeticiones-f.getRepeticiones())/margen);
-                resultados.add(r);
-            }
-        }
-        
-        return resultados;
-    }
-    
-    public ArrayList<Resultado> filtrarPorTipo(ArrayList<Resultado> res, int repeticiones, double margen){
-        ArrayList<Resultado> resultados = new ArrayList<Resultado>();
-        for (Resultado r : res){
-            Faro f = r.getFaro();
-            String destello = "D";
-            String ocultaciones = "Oc";
-            double repeticionesPorMinuto = (repeticiones*60)/f.getTiempoTotal();
-            
-            if(repeticionesPorMinuto<60 && f.getTipo().equalsIgnoreCase(destello) ||
-               repeticionesPorMinuto<60 && f.getTipo().equalsIgnoreCase(ocultaciones)){
-                r.addIndice(1-Math.abs(repeticionesPorMinuto-59)/margen);
-                resultados.add(r);
-                
-                }
-            else if(repeticionesPorMinuto>=60 && repeticionesPorMinuto<120){
-                r.addIndice(1-Math.abs(repeticionesPorMinuto-119)/margen);
-                resultados.add(r);
-                }
-            else if(repeticionesPorMinuto>=120){
-                r.addIndice(1);
-                resultados.add(r);
-                }
-            }
-        return resultados;
-    }
-
     public static String slug(String str) {
         return Normalizer.normalize(str, Normalizer.Form.NFD)
                 .replaceAll("[^\\p{ASCII}]", "")
@@ -78,7 +23,7 @@ public class Metodos {
     }
 
     public ArrayList<Resultado> leer(String nombre) {
-        FileReader lectorArchivo;
+         FileReader lectorArchivo;
         ArrayList<Resultado> lista = new ArrayList<Resultado>();
         try {
             lectorArchivo = new FileReader(new File(nombre));
@@ -88,82 +33,80 @@ public class Metodos {
             linea = br.readLine();
 
             while (linea != null) {
-                String tipo = "";
+                String nombre_faro = "";
+                String longitud = "";
+                String latitud = "";
                 String color = "";
                 String segundos = "";
                 String repeticiones = "1";
-                String tiempoTotal = "0"; 
+                String tiempoTotal = ""; 
+                String coord_X = "";
+                String coord_Y = "";
+                double[] luz = null;
+                double[] ocultaciones = null;
                 int numeroDeDestellos = 0;
                 int n = 0;
+                int i = 0;
+                int t = 0;
+                int v = 0;
+                double tiempo_Luz = 0;
+                double tiempo_Ocultacion = 0;
 
                 System.out.println(linea);
 
                 while (n < linea.length()) {
                     char caracter = linea.charAt(n);
                     char caracterSiguiente = '-';
-
                     try {
                         caracterSiguiente = linea.charAt(n + 1);
                     } catch (Exception e) {
                     }
-
-                    if (esMayuscula(caracter) || caracter == ' ') {
-                        switch (caracter) {
-                            case ' ':
-                                tiempoTotal = "";
-                                char tiempo;
-
-                                while (true) {
-                                    n++;
-                                    try {
-                                        tiempo = linea.charAt(n);
-                                        if (tiempo == 's') {
-                                            break;
-                                        } 
-                                        else tiempoTotal += tiempo==','?'.':tiempo;
-                                    } catch (Exception e) {
-                                        break;
-                                    }
-                                }
-
+                    if(caracter == '|'){
+                        i++;   
+                    }
+                    else {
+                        switch (i){
+                            case 0:
+                                if(caracter == ' ') break;
+                                else coord_X += caracter;
                                 break;
-
-                            case 'G':
-                                if (caracterSiguiente == 'p') {
-                                    n++;
-                                } else {
-                                    System.out.println("Error, Gp chungo: " + linea + ", " + caracter);
-                                }
+                            case  1:
+                                if(caracter == ' ') break;
+                                else coord_Y += caracter;
                                 break;
-
-                            case 'D':
-                            case 'C':
-                            case 'O':
-                                tipo += caracter;
-                                if (caracter != 'D') {
-                                    if ((caracter == 'O' && caracterSiguiente == 'c') || (caracter == 'C' && caracterSiguiente == 't')) {
-                                        tipo += caracterSiguiente;
+                            case  2:
+                            case  3:
+                                break;
+                            case  4:
+                                if(caracter == ' ' && caracterSiguiente == '|') break;
+                                else if(caracter == ' ' && caracterSiguiente != '|') 
+                                     nombre_faro += caracter;
+                                else nombre_faro += caracter;
+                                break;
+                            case  5:
+                                if(caracter == ' ') break;
+                                else longitud += caracter;
+                                break;
+                            case  6:
+                                if(caracter == ' ') break;
+                                else latitud += caracter;
+                                break;
+                            case  7:
+                                if(caracter == ' ') break;
+                                else color += caracter;
+                                break;
+                            case  8:
+                                
+                                char parte;
+                                String cadena;
+                                int numero;
+                                if(caracter == '('){
+                                    while(true){
                                         n++;
-                                    } else {
-                                        System.out.println("Error, Tipo chungo: " + linea + ", " + caracter);
-                                        break;
-                                    }
-                                }
-
-                                if (linea.charAt(n + 1) == '(') {
-                                    repeticiones = "";
-                                    char parte;
-                                    String cadena;
-                                    int numero;
-                                    
-                                    while (true) {
-                                        n++;
-                                        parte = linea.charAt(n + 1);
-                                        if (parte == ')') {
-                                            break;
-                                        }
-                                        if(parte == '+') { 
-                                            parte = linea.charAt(n + 2);
+                                        parte = linea.charAt(n);
+                                        if(parte == ')') break;
+                                        else if(parte == '+'){
+                                            parte = linea.charAt(n + 1);
                                             cadena = "" + parte;
                                             numero = Integer.parseInt(cadena);
 
@@ -171,45 +114,81 @@ public class Metodos {
                                             repeticiones = Integer.toString(numeroDeDestellos);
                                             break;
                                         }
-                                        cadena = "" + parte;
-                                        numero = Integer.parseInt(cadena);
-
-                                        numeroDeDestellos += numero;
-                                        repeticiones = Integer.toString(numeroDeDestellos);
+                                        else {
+                                            cadena = "" + parte;
+                                            numero = Integer.parseInt(cadena);
+                                            numeroDeDestellos += numero;
+                                            repeticiones = Integer.toString(numeroDeDestellos);
+                                        }
                                         
                                     }
-
                                 }
-
+                                else break; 
+                            case  9:
                                 break;
+                            case 10:
+                                char parte2;
+                                char punto = '.';
+                                String tiempoL = "";
+                                String tiempoO = "";
+                                int numero2;
+                                luz = new double[50];
+                                ocultaciones = new double[50];
+                                //caracteristicas
+                                if(caracter == 'L'){
+                                    t++;
+                                    n += 2;
+                                    caracter = linea.charAt(n);
+                                            if(caracterSiguiente == ' ' && linea.charAt(n+2) != 'o'){
+                                                tiempoL += caracter;
+                                                tiempoL += punto;
+                                                tiempoL += linea.charAt(n+2);
+                                                tiempo_Luz = Double.parseDouble(tiempoL);
+                                            }
+                                            else if(caracter == ' ' && caracterSiguiente == 'o') break;
+                                            else {
+                                                tiempoL += caracter;
+                                                tiempo_Luz = Double.parseDouble(tiempoL);
+                                            }
+                                        
+                                        luz[t] = tiempo_Luz;
+                                    break;
+                                    }
+                                else if (caracter == 'o'){
+                                    v++;
+                                    n += 3;
+                                    caracter = linea.charAt(n);
+                                            if(caracterSiguiente == ' ' && linea.charAt(n+2) != 'L' ||
+                                               caracterSiguiente == ' ' && linea.charAt(n+2) != '|'){
+                                                tiempoO += caracter;
+                                                tiempoO += punto;
+                                                tiempoO += linea.charAt(n+2);
+                                                tiempo_Ocultacion = Double.parseDouble(tiempoO);
 
-                            case 'V':
-                            case 'A':
-                            case 'B':
-                                color += caracter;
-                                break;
-
-                            case 'R':
-                                if (caracterSiguiente == 'p') {
-                                    tipo += caracter;
-                                    tipo += caracterSiguiente;
-                                    n++;
-                                } else {
-                                    color += caracter;
+                                            }
+                                            else if(caracter == ' ' && caracterSiguiente == 'L' || 
+                                                    caracter == ' ' && caracterSiguiente == '|' ) break;
+                                            else {
+                                                tiempoO += caracter;
+                                                tiempo_Ocultacion = Double.parseDouble(tiempoO);
+                                            }
+                                      ocultaciones[v] = tiempo_Ocultacion;
+                                      break; 
                                 }
-
+                                else break;
+                            case 11:
+                                if(caracter == ' ') break;
+                                else tiempoTotal += caracter;
+                            case 12:
+                            case 13:
                                 break;
-                        }
-
-                    } else {
-                        System.out.println("Error, algo chungo está pasando: " + linea + ", " + caracter);
+                        }   
                     }
-
                     n++;
-                    System.out.println(linea + " - " + tipo + ":" + repeticiones + " - " + color + " - " + tiempoTotal);
-                
+                    System.out.println(linea + " /// " + nombre_faro + ":"+ " " + longitud +" - "+ latitud + " - " +  coord_X + " - " +  coord_Y + " - " +  tiempo_Luz + " - " +  tiempo_Ocultacion + " - " + repeticiones + " - " + color + " - " + tiempoTotal);
                 }
-                Faro f = new Faro(tipo, Integer.parseInt(repeticiones), color, Double.parseDouble(tiempoTotal));
+
+                Faro f = new Faro(nombre_faro, longitud, latitud, coord_X, coord_Y, repeticiones, color, ocultaciones, luz, Double.parseDouble(tiempoTotal));
 		lista.add(new Resultado(f));
                 linea = br.readLine();
             }
@@ -228,11 +207,6 @@ public class Metodos {
             } catch (IOException ex) {
                 Logger.getLogger(Metodos.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-           /* System.out.println("Datos guardados");
-            for (Faro r : lista) {
-                System.out.println(r);
-            }*/
         } catch (IOException e) {
             System.out.println("Error:" + e.getMessage());
         }
