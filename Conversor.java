@@ -19,19 +19,8 @@ public class Conversor {
         
         Metodos a = new Metodos();
      
-        ArrayList<Resultado> faros = a.leer("codigos.txt");
+        ArrayList<Resultado> faros = a.leer("results.txt");
         System.out.println("Todos los faros:");
         System.out.println(faros);
-     
-        ArrayList<Resultado> resultados = a.filtrarPorTiempo(faros, 7, 2);
-        System.out.println("Faros filtrados:");
-        System.out.println(resultados);
-     
-     
-    /*
-       System.out.println(esMayuscula('A'));
-       System.out.println(esMayuscula('b'));
-       System.out.println(esMayuscula('É'));
-       */
     }   
 }
