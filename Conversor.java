@@ -19,8 +19,20 @@ public class Conversor {
         
         Metodos a = new Metodos();
      
-        ArrayList<Resultado> faros = a.leer("results.txt");
+        ArrayList<Resultado> faros = a.parseFile("results.txt");
         System.out.println("Todos los faros:");
         System.out.println(faros);
+        
+        ArrayList<Resultado> resultados = a.filtrarPorTiempo(faros, 19, 2);
+        System.out.println("Faros filtrados:");
+        System.out.println(resultados);
+        
+        ArrayList<Resultado> resultadosPorRepeticiones = a.filtrarPorRepeticiones(resultados, 5, 1);
+        System.out.println("Faros filtrados:");
+        System.out.println(resultadosPorRepeticiones);
+        
+        ArrayList<Resultado> calculoPorcentajes = a.calcularPorcentaje(resultadosPorRepeticiones);
+        System.out.println("Faros filtrados segun mayor probabilidad:");
+        System.out.println(calculoPorcentajes);
     }   
 }
