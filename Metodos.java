@@ -4,233 +4,29 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Metodos {
     
-    private static final String mayusculas = "QWERTYUIOPLKJHGFDSAZXCVBNM";
-
-    public static String slug(String str) {
-        return Normalizer.normalize(str, Normalizer.Form.NFD)
-                .replaceAll("[^\\p{ASCII}]", "")
-                .replaceAll("[^a-zA-Z0-9 ]", "");
-    }
-
-    public static boolean esMayuscula(char letra) {
-        return mayusculas.contains(slug(letra + ""));
-    }
-
-    public ArrayList<Resultado> leer(String nombre) {
+    public ArrayList<Resultado> parseFile(String nombre) {
         FileReader lectorArchivo;
         ArrayList<Resultado> lista = new ArrayList<Resultado>();
+        
         try {
             lectorArchivo = new FileReader(new File(nombre));
             BufferedReader br = new BufferedReader(lectorArchivo);
-            String linea;
+            String linea = br.readLine();
 
-            linea = br.readLine();
-
-            while (linea != null) {
-                String nombre_faro = "";
-                String longitud = "";
-                String latitud = "";
-                String color = "";
-                String segundos = "";
-                String repeticiones = "1";
-                String tiempoTotal = ""; 
-                String coord_X = "";
-                String coord_Y = "";
-                double[] luz = null;
-                double[] ocultaciones = null;
-                int numeroDeDestellos = 0;
-                int n = 0;
-                int i = 0;
-                int t;
-                int v = 0;
-                int k;
-                double tiempo_Luz = 0;
-                double tiempo_Ocultacion = 0;
-
+            while(linea != null) {
                 System.out.println(linea);
-
-                while (n < linea.length()) {
-                    t = 0;
-                    char caracter = linea.charAt(n);
-                    char caracterSiguiente = '-';
-                    try {
-                        caracterSiguiente = linea.charAt(n + 1);
-                    } catch (Exception e) {
-                    }
-                    if(caracter == '|'){
-                        i++;   
-                    }
-                    else {
-                        switch (i){
-                            case 0:
-                                if(caracter == ' ') break;
-                                else coord_X += caracter;
-                                break;
-                            case  1:
-                                if(caracter == ' ') break;
-                                else coord_Y += caracter;
-                                break;
-                            case  2:
-                            case  3:
-                                break;
-                            case  4:
-                                if(caracter == ' ' && caracterSiguiente == '|') break;
-                                else if(caracter == ' ' && caracterSiguiente != '|') 
-                                     nombre_faro += caracter;
-                                else nombre_faro += caracter;
-                                break;
-                            case  5:
-                                if(caracter == ' ') break;
-                                else longitud += caracter;
-                                break;
-                            case  6:
-                                if(caracter == ' ') break;
-                                else latitud += caracter;
-                                break;
-                            case  7:
-                                if(caracter == ' ') break;
-                                else color += caracter;
-                                break;
-                            case  8:
-                                
-                                char parte;
-                                String cadena;
-                                int numero;
-                                if(caracter == '('){
-                                    while(true){
-                                        n++;
-                                        parte = linea.charAt(n);
-                                        if(parte == ')') break;
-                                        else if(parte == '+'){
-                                            parte = linea.charAt(n + 1);
-                                            cadena = "" + parte;
-                                            numero = Integer.parseInt(cadena);
-
-                                            numeroDeDestellos += numero;
-                                            repeticiones = Integer.toString(numeroDeDestellos);
-                                            break;
-                                        }
-                                        else {
-                                            cadena = "" + parte;
-                                            numero = Integer.parseInt(cadena);
-                                            numeroDeDestellos += numero;
-                                            repeticiones = Integer.toString(numeroDeDestellos);
-                                        }
-                                        
-                                    }
-                                }
-                                else break; 
-                            case  9:
-                                break;
-                            case 10:
-                                char cuenta;
-                                char punto = '.';
-                                String tiempoL = "";
-                                String tiempoO = "";
-                                String cadena_cuenta;
-                                int numero_que_se_repite;
-                                luz = new double[50];
-                                ocultaciones = new double[50];
-                                //caracteristicas
-                                if(caracter == 'L'){
-                                    t++;
-                                    n += 2;
-                                    caracter = linea.charAt(n);
-                                            if(linea.charAt(n+8) == ')'){
-                                                cuenta = linea.charAt(n+9);
-                                                cadena_cuenta = "" + cuenta;
-                                                numero_que_se_repite = Integer.parseInt(cadena_cuenta);
-                                                
-                                                if(caracterSiguiente == ' ' && linea.charAt(n+2) != 'o'){
-                                                tiempoL += caracter;
-                                                tiempoL += punto;
-                                                tiempoL += linea.charAt(n+2);
-                                                tiempo_Luz = Double.parseDouble(tiempoL);
-                                                    for(k = 0;k < numero_que_se_repite;k++){
-                                                        luz[t] = tiempo_Luz;
-                                                        t++;
-                                                    }
-                                                }
-                                                else {
-                                                    tiempoL += caracter;
-                                                    tiempo_Luz = Double.parseDouble(tiempoL);
-                                                    for(k = 0;k < numero_que_se_repite;k++){
-                                                        luz[t] = tiempo_Luz;
-                                                        t++;
-                                                    }
-                                                }        
-                                            }
-                                            else if(caracterSiguiente == ' ' && linea.charAt(n+2) != 'o'){
-                                                tiempoL += caracter;
-                                                tiempoL += punto;
-                                                tiempoL += linea.charAt(n+2);
-                                                tiempo_Luz = Double.parseDouble(tiempoL);
-                                                luz[t] = tiempo_Luz;
-                                            }
-                                            else if(caracter == ' ' && caracterSiguiente == 'o') break;
-                                            else {
-                                                tiempoL += caracter;
-                                                tiempo_Luz = Double.parseDouble(tiempoL);
-                                                luz[t] = tiempo_Luz;
-                                            }
-                                        
-                                        
-                                    break;
-                                    }
-                                else if (caracter == 'o'){
-                                    v++;
-                                    n += 3;
-                                    caracter = linea.charAt(n);
-                                            if(caracterSiguiente == ' ' && linea.charAt(n+2) != 'L' ||
-                                               caracterSiguiente == ' ' && linea.charAt(n+2) != '|'){
-                                                tiempoO += caracter;
-                                                tiempoO += punto;
-                                                tiempoO += linea.charAt(n+2);
-                                                tiempo_Ocultacion = Double.parseDouble(tiempoO);
-                                                ocultaciones[v] = tiempo_Ocultacion;
-
-                                            }
-                                            else if(caracter == ' ' && caracterSiguiente == 'L' || 
-                                                    caracter == ' ' && caracterSiguiente == '|' ) break;
-                                            else {
-                                                tiempoO += caracter;
-                                                tiempo_Ocultacion = Double.parseDouble(tiempoO);
-                                                ocultaciones[v] = tiempo_Ocultacion;
-                                            }
-                                      
-                                      break; 
-                                }
-                                else break;
-                            case 11:
-                                if(caracter == ' ') break;
-                                else tiempoTotal += caracter;
-                            case 12:
-                            case 13:
-                                break;
-                            //case 13: break; (No sirve porque nunca entraria
-                        }   
-                    }
-                    n++;
-                    System.out.println(linea + " /// " + nombre_faro + ":"+ " " + longitud +" - "+ latitud + " - " +  coord_X + " - " +  coord_Y + " - " +  tiempo_Luz + " - " +  tiempo_Ocultacion + " - " + repeticiones + " - " + color + " - " + tiempoTotal);
-                }
-                System.out.println("Estas son los tiempos de Luz:");
-                System.out.println(luz[0]);
-                System.out.println("Estas son los tiempos de Ocultacion:");
-                System.out.println(ocultaciones[0]);
-                Faro f = new Faro(nombre_faro, longitud, latitud, coord_X, coord_Y, repeticiones, color, ocultaciones, luz, Double.parseDouble(tiempoTotal));
-		lista.add(new Resultado(f));
+                lista.add(new Resultado(parseFaro(linea)));
                 linea = br.readLine();
             }
             br.close();
             lectorArchivo.close();
-
+            
             ObjectOutputStream salida;
             try {
                 salida = new ObjectOutputStream(new FileOutputStream("faros.obj"));
@@ -238,7 +34,6 @@ public class Metodos {
                 for(Resultado r : lista) {
                     salida.writeObject(r.getFaro());
                 }
-
                 salida.close();
             } catch (IOException ex) {
                 Logger.getLogger(Metodos.class.getName()).log(Level.SEVERE, null, ex);
@@ -247,5 +42,163 @@ public class Metodos {
             System.out.println("Error:" + e.getMessage());
         }
         return lista;
+    }
+    
+    public ArrayList<Resultado> filtrarPorTiempo(ArrayList<Resultado> res, double tiempo, double margen){
+        ArrayList<Resultado> resultados = new ArrayList<Resultado>();
+        for (Resultado r : res){
+            Faro f = r.getFaro();
+            
+            if(tiempo-margen<=tiempoTotal(f.getDestellos()) && tiempo+margen>=tiempoTotal(f.getDestellos())){
+                r.addIndice(1-Math.abs(tiempo-tiempoTotal(f.getDestellos()))/margen);
+                resultados.add(r);
+            }
+        }
+        
+        return resultados;
+    }
+    
+     public ArrayList<Resultado> filtrarPorRepeticiones(ArrayList<Resultado> res, int repeticiones, double margen){
+        ArrayList<Resultado> resultados = new ArrayList<Resultado>();
+        for (Resultado r : res){
+            Faro f = r.getFaro();
+            
+            if(repeticiones-margen<=numeroDeRepeticiones(f.getDestellos()) && repeticiones+margen>=numeroDeRepeticiones(f.getDestellos()) ){
+                r.addIndice(1-Math.abs(repeticiones-numeroDeRepeticiones(f.getDestellos()))/margen);
+                resultados.add(r);
+            }
+        }
+        
+        return resultados;
+    }
+     
+     public ArrayList<Resultado> calcularPorcentaje (ArrayList<Resultado> res){
+         ArrayList<Resultado> resultados = new ArrayList<Resultado>();
+         for (Resultado r : res){
+            r.addIndice(indiceDeCorrectitudTotal(r.getIndices()));
+            resultados.add(r);
+        }
+         return resultados;
+     }
+     
+     public double indiceDeCorrectitudTotal (ArrayList<Double> indices){
+         double indice = 0;
+         int numeroIndices = 0;
+         double sumaIndices = 0;
+         double indiceTotal = 0;
+         numeroIndices = indices.size();
+         for(int i = 0 ; i<numeroIndices ; i++){
+             indice = indices.get(i);
+             sumaIndices += indice;
+         }
+         indiceTotal = sumaIndices / numeroIndices;
+         return indiceTotal;
+     }
+    
+    private static Faro parseFaro(String linea) {
+        Faro faro = new Faro();
+        String[] campos = linea.split(" \\| ");
+        
+        faro.setCoordenadaCartesiana(parseCoordenadaCartesiana(campos[0], campos[1]));
+        faro.setCoordenadaRadial(parseCoordenadaRadial(campos[5], campos[6]));
+        faro.setColor(campos[7]);
+        faro.setNombre(campos[4]);
+        faro.setDestellos(parseDestellos(campos[10]));
+
+        return faro;
+    }
+        
+    private static Coordenada<Double> parseCoordenadaCartesiana(String x, String y) {
+        Coordenada<Double> coordenada = new Coordenada<Double>();
+        coordenada.setX(Double.parseDouble(x));
+        coordenada.setY(Double.parseDouble(y));
+        
+        return coordenada;
+    }
+    
+    private static Coordenada<String> parseCoordenadaRadial(String x, String y) {
+        Coordenada<String> coordenada = new Coordenada<String>();
+        coordenada.setX(x);
+        coordenada.setY(y);
+        
+        return coordenada;
+    }
+    
+    private static ArrayList<Destello> parseDestellos(String caracteristicas) {
+        ArrayList<Destello> destellos = new ArrayList<Destello>();
+
+        while(caracteristicas.length()>0) {
+            String caracteristica = parseCaracteristica(caracteristicas);
+            destellos.addAll(calculateRepetitions(caracteristica));
+            caracteristicas = caracteristicas.replace(caracteristica, "");
+        }
+        
+        return destellos;
+    }
+    
+    private static ArrayList<Destello> calculateRepetitions(String data) {
+        ArrayList<Destello> destellos = new ArrayList<Destello>();
+        
+        if(data.startsWith("["))
+            destellos.addAll(repiteDestello(data));
+        else
+            destellos.add(parseDestello(data));
+        
+        return destellos;
+    }
+    
+    private static String parseCaracteristica(String caracteristicas) {
+        String data = "";
+        int n = 0;
+
+        do {
+            data += caracteristicas.charAt(n++);
+        } while(n<caracteristicas.length() && (caracteristicas.charAt(n)!='L' || n==2));
+        
+        return data;
+    }
+    
+    private static ArrayList<Destello> repiteDestello(String data) {
+        int parentesisInicial = 2;
+        int parentesisFinal = data.indexOf(')');
+        int repeticiones = Integer.parseInt(data.charAt(parentesisFinal+1)+"");
+        String destelloData = data.substring(parentesisInicial, parentesisFinal);
+        
+        ArrayList<Destello> destellos = new ArrayList<Destello>();
+        Destello d = parseDestello(destelloData);
+        
+        for(int i = repeticiones; i>0; i--)
+            destellos.add(d);
+        
+        return destellos;
+    }
+    
+    private static Destello parseDestello(String data) {
+        Destello destello = new Destello();
+        String dataEncendido = data.split("oc")[0].substring(2);
+        String dataApagado   = data.split("oc")[1];
+        
+        dataEncendido = dataEncendido.trim().replace(" ", ".");
+        dataApagado = dataApagado.trim().replace(" ", ".");
+        
+        destello.setTiempoEncendido(Double.parseDouble(dataEncendido));
+        destello.setTiempoApagado(Double.parseDouble(dataApagado));
+
+        return destello;
+    }
+    
+    private static double tiempoTotal (ArrayList<Destello> destellos){
+        double suma = 0;
+        for (Destello d : destellos){
+            suma += d.getTiempoApagado() + d.getTiempoEncendido();
+        }
+        return suma;
+    }
+    
+    private static int numeroDeRepeticiones (ArrayList<Destello> destellos){
+        int numeroDestellos = 0;
+        numeroDestellos = destellos.size();
+        System.out.println(numeroDestellos);
+        return numeroDestellos; 
     }
 }
