@@ -1,0 +1,43 @@
+import java.io.Serializable;
+
+public class Destello implements Serializable {
+    private Double tiempoEncendido = null;
+    private Double tiempoApagado = null;
+    
+    
+    public boolean comparador(Destello d, int margen) {
+        double encendidoRedondeoArriba = Math.ceil(tiempoEncendido-margen);
+        double encendidoRedondeoAbajo = Math.floor(tiempoEncendido-margen);
+        double apagadoRedondeoArriba = Math.ceil(tiempoApagado-margen);
+        double apagadoRedondeoAbajo = Math.floor(tiempoApagado-margen);
+        
+        double dEncendidoRedondeoArriba = Math.ceil(d.tiempoEncendido-margen);
+        double dEncendidoRedondeoAbajo = Math.floor(d.tiempoEncendido-margen);
+        double dApagadoRedondeoArriba = Math.ceil(d.tiempoApagado-margen);
+        double dApagadoRedondeoAbajo = Math.floor(d.tiempoApagado-margen);
+        
+        return encendidoRedondeoAbajo <= dEncendidoRedondeoAbajo && apagadoRedondeoAbajo >= dApagadoRedondeoAbajo
+                || encendidoRedondeoArriba <= dEncendidoRedondeoArriba && apagadoRedondeoArriba >= dApagadoRedondeoArriba;
+    }
+    
+    public void setTiempoEncendido(Double tiempoEncendido) {
+        this.tiempoEncendido = tiempoEncendido;
+    }
+
+    public void setTiempoApagado(Double tiempoApagado) {
+        this.tiempoApagado = tiempoApagado;
+    }
+
+    public Double getTiempoEncendido() {
+        return tiempoEncendido;
+    }
+
+    public Double getTiempoApagado() {
+        return tiempoApagado;
+    }
+
+    @Override
+    public String toString() {
+        return "L " + tiempoEncendido + " oc " + tiempoApagado;
+    }
+}
