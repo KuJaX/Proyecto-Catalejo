@@ -82,17 +82,11 @@ public class Metodos {
      }
      
      public double indiceDeCorrectitudTotal (ArrayList<Double> indices){
-         double indice = 0;
-         int numeroIndices = 0;
-         double sumaIndices = 0;
-         double indiceTotal = 0;
-         numeroIndices = indices.size();
-         for(int i = 0 ; i<numeroIndices ; i++){
-             indice = indices.get(i);
-             sumaIndices += indice;
-         }
-         indiceTotal = sumaIndices / numeroIndices;
-         return indiceTotal;
+         double suma = 0;
+         for(Double indice:indices)
+             suma += indice;
+
+         return suma/indices.size();
      }
     
     private static Faro parseFaro(String linea) {
@@ -196,9 +190,9 @@ public class Metodos {
     }
     
     private static int numeroDeRepeticiones (ArrayList<Destello> destellos){
-        int numeroDestellos = 0;
-        numeroDestellos = destellos.size();
+        int numeroDestellos = destellos.size();
         System.out.println(numeroDestellos);
         return numeroDestellos; 
     }
 }
+
