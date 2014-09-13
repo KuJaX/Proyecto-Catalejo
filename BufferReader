@@ -1,35 +1,16 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
-/**
- *
- * @author alejandropoloavila
- */
 public class Buffer {
     private class Dato {
         public Double intensidad;
         public Double variacion;
-        public Long momento;
+        public Double momento;
         
-        public Dato(Double i, Double v, Long m) {
+        public Dato(Double i, Double v, Double m) {
             intensidad = i;
             variacion = v;
             momento = m;
-        }
-        
-        public long getMomento() {
-            return momento;
         }
         
         public String toString() {
@@ -67,52 +48,68 @@ public class Buffer {
         return d.variacion>sensibilidad;
     }
     
-    private int buscarDestello (ArrayList<Destello> destellos, Destello destelloComparacion) {
-        int i = 1;
-        int contador = 0;
-        
-        for(;i<destellos.size(); i++) {
-            Destello destelloActual = destellos.get(i);
-            if(destelloComparacion == destelloActual){
-                contador++;
-            }
-            
-        }
-        
-        return contador;
-    }
-    
     private boolean isCompleto(Destello d) {
         return d.getTiempoApagado()!=null&&d.getTiempoEncendido()!=null;
     }
     
+    public double redondear( double numero) {
+        return numero = (Math.round(numero * 10.0)) / 10.0;
+    }
+    
    private ArrayList<Destello> getCiclo(ArrayList<Destello> destellos) {
        Destello primero = destellos.get(0);
+       System.out.println("Este es el destello PRIMERO: "+primero+"\n");
        Double ceil = Math.ceil((float)destellos.size() / 2);
        int last = ceil.intValue();
-       int first = 0;
+       System.out.println("Este es el valor LAST: "+last+"\n");
        
        for(;last>0;last--) {
+           System.out.println("Este es el contador para saber por que vez esta en el for(;last>0;last--): "+ last +"\n\n\n\n");
+           System.out.print("Este es el booleano que se hace en if(last != destellos.size()) al entrar en for(;last>0;last--):  ");
+           System.out.println(last != destellos.size());
+           if(last != destellos.size()){
            Destello ultimo = destellos.get(last);
-           if(primero.comparador(ultimo, 1)) {
+           System.out.println("Este es el destello ULTIMO: "+ultimo+"\n");
+           System.out.println("Ahora entra en if(primero.comparador(ultimo, .1)): \n");
+           if(primero.comparador(ultimo, .04999)) {
                Destello primeraInstancia;
                Destello segundaInstancia;
                
                ArrayList<Destello> ciclo = new ArrayList<Destello>();
                ciclo.add(primero);
-                       
+               System.out.print("Esto es el destello PRIMERO que se graba en el ciclo: "+ciclo+"\n");
+               
                for(int i=1; i<last; i++) {
+                   System.out.println("Este es el contador para saber por que vez va en for(int i=1; i<last; i++): "+i+"\n");
+                   System.out.println("Ahora ha entrado en for(int i=1; i<last; i++)\n");
+                   System.out.print("Este es el booleano de if(i+last != destellos.size()): ");
+                   System.out.println(i+last != destellos.size());
+                   System.out.println("\n");
+                   if(i+last != destellos.size()){
                    primeraInstancia = destellos.get(i);
-                   segundaInstancia = destellos.get(i+last);
+                   System.out.println("Este es el destello PRIMERAINTANCIA: "+primeraInstancia+"\n");
+                   segundaInstancia = destellos.get(i+last);//El fallo esta aqui
+                   System.out.println("Este es el destello SEGUNDAINSTANCIA: "+segundaInstancia+"\n");
                    
-                   if(!primeraInstancia.comparador(segundaInstancia, 1))
+                   System.out.println("Ahora entra en if(!primeraInstancia.comparador(segundaInstancia, .1): \n");
+                   if(!primeraInstancia.comparador(segundaInstancia, .04999))
                        break;
                    
                    ciclo.add(primeraInstancia);
+                   System.out.println("Este es el ciclo segun se van añadiendo datos:   "+ciclo+"\n");
+                   }
+                   else break;
                }
-               
+               System.out.print("Este es el booleano de (ciclo.size() == last):  ");
+               System.out.println(ciclo.size() == last);
+               System.out.println("\n");
                if(ciclo.size() == last) {
                    ArrayList<Destello> subCiclo = getCiclo(ciclo);
+                   System.out.println("Este es el SUBCICLO: "+subCiclo+"\n");
+                   
+                   System.out.print("Esto es lo que devuelve el return subCiclo.size()>0 ? subCiclo : ciclo---->");
+                   System.out.println(subCiclo.size()>0 ? subCiclo : ciclo);
+                   System.out.println("\n");
                    return subCiclo.size()>0 ? subCiclo : ciclo;
                    
                    /*
@@ -125,10 +122,11 @@ public class Buffer {
                    */
                }
            }
+        }
        }
-       
-       
        return new ArrayList<Destello>();
+       
+       //return new ArrayList<Destello>();
        
      
    }
@@ -145,14 +143,16 @@ public class Buffer {
         while(i<datos.size()) {
             actual = datos.get(i);
             if(isCambioBrusco(actual) && i!=size-1) {
-                System.out.println(size);
-                System.out.println(i);
+                //System.out.println(size);
+                //System.out.println(i);
                 i = finalDestello(datos, i);//aqui debería leer el proximo cambio brusco
-                System.out.println(i);
+                //System.out.println(i);
                 actual = datos.get(i);
-                System.out.println(anterior);
-                System.out.println(actual);
-                double dif = actual.momento-anterior.momento;
+                //System.out.println(anterior);
+                //System.out.println(actual);
+                double difer = actual.momento-anterior.momento;
+                double dif = redondear(difer);
+                
                 if(actual.intensidad>anterior.intensidad){
                     destelloActual.setTiempoApagado(dif);
                     anterior = datos.get(i);
@@ -180,181 +180,893 @@ public class Buffer {
     }
     
     
-    public void simular() {
+    public ArrayList <Destello> simular() {
         ArrayList<Destello> ciclo = new ArrayList<Destello>();
         ArrayList<Destello> destellos = new ArrayList<Destello>();
         
         Long n = new Long(0);
         
-        datos.add(new Dato(.1, .2, n+0));
-        datos.add(new Dato(.1, .2, n+100));
-        datos.add(new Dato(.8, .9, n+200));
-        datos.add(new Dato(.6, .2, n+300));
-        datos.add(new Dato(.7, .1, n+400));
-        datos.add(new Dato(.1, .8, n+500));//L 300 oc 200
-        datos.add(new Dato(.1, .1, n+600));
-        datos.add(new Dato(.8, .8, n+700));///////
-        datos.add(new Dato(.7, .1, n+800));
-        datos.add(new Dato(.1, .8, n+900));
-        datos.add(new Dato(.1, .1, n+1000));// L200 oc300
-        datos.add(new Dato(.2, .1, n+1100));
-        datos.add(new Dato(.9, .8, n+1200));/////
-        datos.add(new Dato(.1, .9, n+1300));
-        datos.add(new Dato(.2, .1, n+1400));//L100 oc 200
-        datos.add(new Dato(.9, .8, n+1500));///
-        datos.add(new Dato(.7, .2, n+1600));
-        datos.add(new Dato(.8, .1, n+1700));//L300 oc 200
-        datos.add(new Dato(.1, .7, n+1800));
-        datos.add(new Dato(.3, .2, n+1900));
-        datos.add(new Dato(.9, .8, n+2000));/////
-        datos.add(new Dato(.8, .1, n+2100));
-        datos.add(new Dato(.1, .7, n+2200));
-        datos.add(new Dato(.2, .1, n+2300));/// L200 oc 300
-        datos.add(new Dato(.3, .2, n+2400));
-        datos.add(new Dato(.9, .8, n+2500));/////
-        datos.add(new Dato(.1, .9, n+2600));
-        datos.add(new Dato(.2, .1, n+2700));//L100 oc 200
-        datos.add(new Dato(.9, .8, n+2800));///
-        datos.add(new Dato(.6, .2, n+29000));
-        datos.add(new Dato(.7, .1, n+3000));
-        datos.add(new Dato(.1, .8, n+3100));//L 300 oc 200
-        datos.add(new Dato(.1, .1, n+3200));
-        datos.add(new Dato(.8, .8, n+3300));///////
-        datos.add(new Dato(.7, .1, n+3400));
-        datos.add(new Dato(.1, .8, n+3500));
-        datos.add(new Dato(.1, .1, n+3600));// L200 oc300
-        datos.add(new Dato(.2, .1, n+3700));
-        datos.add(new Dato(.9, .8, n+3800));/////
-        datos.add(new Dato(.1, .9, n+3900));
-        datos.add(new Dato(.2, .1, n+4000));//L100 oc 200
-        datos.add(new Dato(.9, .8, n+4100));///
-        datos.add(new Dato(.7, .2, n+4200));
-        datos.add(new Dato(.8, .1, n+4300));//L300 oc 200
-        datos.add(new Dato(.1, .7, n+4400));
-        datos.add(new Dato(.3, .2, n+4500));
-        datos.add(new Dato(.9, .8, n+4600));/////
-        datos.add(new Dato(.8, .1, n+4700));
-        datos.add(new Dato(.1, .7, n+4800));
-        datos.add(new Dato(.2, .1, n+4900));/// L200 oc 300
-        datos.add(new Dato(.3, .2, n+5000));
-        datos.add(new Dato(.9, .8, n+5100));/////
-        datos.add(new Dato(.1, .9, n+5200));
-        datos.add(new Dato(.2, .1, n+5300));//L100 oc 200
-        datos.add(new Dato(.9, .8, n+5400));///
-        datos.add(new Dato(.7, .2, n+5500));
-        datos.add(new Dato(.8, .1, n+5600));//L300 oc 200
-        datos.add(new Dato(.1, .7, n+5700));
-        datos.add(new Dato(.3, .2, n+5800));
-        datos.add(new Dato(.9, .8, n+5900));/////
-        datos.add(new Dato(.7, .2, n+6000));
-        datos.add(new Dato(.8, .1, n+6100));//L300 oc 200
-        datos.add(new Dato(.1, .7, n+6200));
-        datos.add(new Dato(.3, .2, n+6300));
-        datos.add(new Dato(.9, .8, n+6400));/////
-        datos.add(new Dato(.7, .2, n+6500));
-        datos.add(new Dato(.8, .1, n+6600));//L300 oc 200
-        datos.add(new Dato(.1, .7, n+6700));
-        datos.add(new Dato(.3, .2, n+6800));
-        datos.add(new Dato(.9, .8, n+6900));/////
+        datos.add(new Dato(.1, .2, n+.0));
+        datos.add(new Dato(.1, .2, n+.1));
+        datos.add(new Dato(.8, .9, n+.2));////
+        datos.add(new Dato(.6, .2, n+.3));
+        datos.add(new Dato(.7, .1, n+.4));
+        datos.add(new Dato(.8, .2, n+.5));
+        datos.add(new Dato(.1, .8, n+.6));//L 0.4
+        datos.add(new Dato(.3, .2, n+.7));
+        datos.add(new Dato(.2, .1, n+.8));
+        datos.add(new Dato(.4, .3, n+.9));
+        datos.add(new Dato(.1, .3, n+1.0));
+        datos.add(new Dato(.2, .1, n+1.1));
+        datos.add(new Dato(.1, .1, n+1.2));
+        datos.add(new Dato(.1, .1, n+1.3));
+        datos.add(new Dato(.5, .4, n+1.4));
+        datos.add(new Dato(.2, .3, n+1.5));
+        datos.add(new Dato(.1, .1, n+1.6));
+        datos.add(new Dato(.1, .1, n+1.7));
+        datos.add(new Dato(.8, .7, n+1.8));// oc 1.2
+        datos.add(new Dato(.7, .2, n+1.9));
+        datos.add(new Dato(.9, .2, n+2.0));
+        datos.add(new Dato(.8, .1, n+2.1));
+        datos.add(new Dato(.1, .7, n+2.2));// L 0.4
+        datos.add(new Dato(.2, .1, n+2.3));
+        datos.add(new Dato(.1, .1, n+2.4));
+        datos.add(new Dato(.2, .1, n+2.5));
+        datos.add(new Dato(.3, .1, n+2.6));
+        datos.add(new Dato(.1, .2, n+2.7));
+        datos.add(new Dato(.1, .1, n+2.8));
+        datos.add(new Dato(.1, .1, n+2.9));
+        datos.add(new Dato(.1, .1, n+3.0));
+        datos.add(new Dato(.1, .1, n+3.1));
+        datos.add(new Dato(.3, .2, n+3.2));
+        datos.add(new Dato(.1, .3, n+3.3));
+        datos.add(new Dato(.1, .1, n+3.4));
+        datos.add(new Dato(.1, .1, n+3.5));
+        datos.add(new Dato(.1, .1, n+3.6));
+        datos.add(new Dato(.2, .1, n+3.7));
+        datos.add(new Dato(.1, .1, n+3.8));
+        datos.add(new Dato(.1, .1, n+3.9));
+        datos.add(new Dato(.2, .1, n+4.0));
+        datos.add(new Dato(.1, .1, n+4.1));
+        datos.add(new Dato(.1, .1, n+4.2));
+        datos.add(new Dato(.4, .3, n+4.3));
+        datos.add(new Dato(.1, .4, n+4.4));
+        datos.add(new Dato(.1, .1, n+4.5));
+        datos.add(new Dato(.1, .1, n+4.6));
+        datos.add(new Dato(.1, .1, n+4.7));
+        datos.add(new Dato(.2, .2, n+4.8));
+        datos.add(new Dato(.2, .1, n+4.9));
+        datos.add(new Dato(.3, .2, n+5.0));
+        datos.add(new Dato(.1, .3, n+5.1));
+        datos.add(new Dato(.1, .1, n+5.2));
+        datos.add(new Dato(.2, .1, n+5.3));
+        datos.add(new Dato(.1, .1, n+5.4));
+        datos.add(new Dato(.3, .2, n+5.5));
+        datos.add(new Dato(.1, .2, n+5.6));
+        datos.add(new Dato(.1, .1, n+5.7));
+        datos.add(new Dato(.1, .1, n+5.8));
+        datos.add(new Dato(.1, .1, n+5.9));
+        datos.add(new Dato(.1, .1, n+6.0));
+        datos.add(new Dato(.2, .2, n+6.1));
+        datos.add(new Dato(.2, .1, n+6.2));
+        datos.add(new Dato(.1, .1, n+6.3));
+        datos.add(new Dato(.1, .1, n+6.4));
+        datos.add(new Dato(.1, .1, n+6.5));
+        datos.add(new Dato(.1, .1, n+6.6));
+        datos.add(new Dato(.1, .1, n+6.7));
+        datos.add(new Dato(.1, .1, n+6.8));
+        datos.add(new Dato(.3, .2, n+6.9));
+        datos.add(new Dato(.1, .3, n+7.0));
+        datos.add(new Dato(.1, .1, n+7.1));
+        datos.add(new Dato(.1, .1, n+7.2));
+        datos.add(new Dato(.1, .1, n+7.3));
+        datos.add(new Dato(.3, .2, n+7.4));
+        datos.add(new Dato(.1, .1, n+7.5));
+        datos.add(new Dato(.1, .1, n+7.6));
+        datos.add(new Dato(.2, .1, n+7.7));
+        datos.add(new Dato(.1, .1, n+7.8));
+        datos.add(new Dato(.6, .5, n+7.9));
+        datos.add(new Dato(.1, .4, n+8.0));
+        datos.add(new Dato(.1, .1, n+8.1));
+        datos.add(new Dato(.1, .1, n+8.2));
+        datos.add(new Dato(.1, .1, n+8.3));
+        datos.add(new Dato(.1, .1, n+8.4));
+        datos.add(new Dato(.1, .1, n+8.5));
+        datos.add(new Dato(.1, .1, n+8.6));
+        datos.add(new Dato(.1, .1, n+8.7));
+        datos.add(new Dato(.1, .1, n+8.8));
+        datos.add(new Dato(.1, .1, n+8.9));
+        datos.add(new Dato(.4, .3, n+9.0));
+        datos.add(new Dato(.3, .1, n+9.1));
+        datos.add(new Dato(.1, .2, n+9.2));
+        datos.add(new Dato(.1, .1, n+9.3));
+        datos.add(new Dato(.1, .1, n+9.4));
+        datos.add(new Dato(.1, .1, n+9.5));
+        datos.add(new Dato(.1, .1, n+9.6));
+        datos.add(new Dato(.1, .1, n+9.7));
+        datos.add(new Dato(.1, .1, n+9.8));
+        datos.add(new Dato(.1, .1, n+9.9));
+        datos.add(new Dato(.9, .9, n+10.0));// oc 7.8
+        datos.add(new Dato(.7, .2, n+10.1));
+        datos.add(new Dato(.9, .2, n+10.2));
+        datos.add(new Dato(.8, .1, n+10.3));
+        datos.add(new Dato(.1, .7, n+10.4));// L 0.4
+        datos.add(new Dato(.2, .1, n+10.5));
+        datos.add(new Dato(.1, .1, n+10.6));
+        datos.add(new Dato(.2, .1, n+10.7));
+        datos.add(new Dato(.3, .1, n+10.8));
+        datos.add(new Dato(.1, .2, n+10.9));
+        datos.add(new Dato(.1, .1, n+11.0));
+        datos.add(new Dato(.1, .1, n+11.1));
+        datos.add(new Dato(.1, .1, n+11.2));
+        datos.add(new Dato(.1, .1, n+11.3));
+        datos.add(new Dato(.3, .2, n+11.4));
+        datos.add(new Dato(.1, .3, n+11.5));
+        datos.add(new Dato(.1, .1, n+11.6));
+        datos.add(new Dato(.1, .1, n+11.7));
+        datos.add(new Dato(.1, .1, n+11.8));
+        datos.add(new Dato(.2, .1, n+11.9));
+        datos.add(new Dato(.1, .1, n+12.0));
+        datos.add(new Dato(.1, .1, n+12.1));
+        datos.add(new Dato(.2, .1, n+12.2));
+        datos.add(new Dato(.1, .1, n+12.3));
+        datos.add(new Dato(.1, .1, n+12.4));
+        datos.add(new Dato(.4, .3, n+12.5));
+        datos.add(new Dato(.1, .4, n+12.6));
+        datos.add(new Dato(.1, .1, n+12.7));
+        datos.add(new Dato(.1, .1, n+12.8));
+        datos.add(new Dato(.1, .1, n+12.9));
+        datos.add(new Dato(.2, .2, n+13.0));
+        datos.add(new Dato(.2, .1, n+13.1));
+        datos.add(new Dato(.3, .2, n+13.2));
+        datos.add(new Dato(.1, .3, n+13.3));
+        datos.add(new Dato(.1, .1, n+13.4));
+        datos.add(new Dato(.2, .1, n+13.5));
+        datos.add(new Dato(.1, .1, n+13.6));
+        datos.add(new Dato(.3, .2, n+13.7));
+        datos.add(new Dato(.1, .2, n+13.8));
+        datos.add(new Dato(.1, .1, n+13.9));
+        datos.add(new Dato(.1, .1, n+14.0));
+        datos.add(new Dato(.1, .1, n+14.1));
+        datos.add(new Dato(.1, .1, n+14.2));
+        datos.add(new Dato(.2, .2, n+14.3));
+        datos.add(new Dato(.2, .1, n+14.4));
+        datos.add(new Dato(.1, .1, n+14.5));
+        datos.add(new Dato(.1, .1, n+14.6));
+        datos.add(new Dato(.1, .1, n+14.7));
+        datos.add(new Dato(.1, .1, n+14.8));
+        datos.add(new Dato(.1, .1, n+14.9));
+        datos.add(new Dato(.1, .1, n+15.0));
+        datos.add(new Dato(.3, .2, n+15.1));
+        datos.add(new Dato(.1, .3, n+15.2));
+        datos.add(new Dato(.1, .1, n+15.3));
+        datos.add(new Dato(.1, .1, n+15.4));
+        datos.add(new Dato(.1, .1, n+15.5));
+        datos.add(new Dato(.3, .2, n+15.6));
+        datos.add(new Dato(.1, .1, n+15.7));
+        datos.add(new Dato(.1, .1, n+15.8));
+        datos.add(new Dato(.2, .1, n+15.9));
+        datos.add(new Dato(.1, .1, n+16.0));
+        datos.add(new Dato(.6, .5, n+16.1));
+        datos.add(new Dato(.1, .4, n+16.2));
+        datos.add(new Dato(.1, .1, n+16.3));
+        datos.add(new Dato(.1, .1, n+16.4));
+        datos.add(new Dato(.1, .1, n+16.5));
+        datos.add(new Dato(.1, .1, n+16.6));
+        datos.add(new Dato(.1, .1, n+16.7));
+        datos.add(new Dato(.1, .1, n+16.8));
+        datos.add(new Dato(.1, .1, n+16.9));
+        datos.add(new Dato(.1, .1, n+17.0));
+        datos.add(new Dato(.1, .1, n+17.1));
+        datos.add(new Dato(.4, .3, n+17.2));
+        datos.add(new Dato(.3, .1, n+17.3));
+        datos.add(new Dato(.1, .2, n+17.4));
+        datos.add(new Dato(.1, .1, n+17.5));
+        datos.add(new Dato(.1, .1, n+17.6));
+        datos.add(new Dato(.1, .1, n+17.7));
+        datos.add(new Dato(.1, .1, n+17.8));
+        datos.add(new Dato(.1, .1, n+17.9));
+        datos.add(new Dato(.1, .1, n+18.0));
+        datos.add(new Dato(.1, .1, n+18.1));
+        datos.add(new Dato(.9, .9, n+18.2));// oc 7.8-----Aqui acaba el ciclo
+        datos.add(new Dato(.7, .2, n+18.3));
+        datos.add(new Dato(.7, .1, n+18.4));
+        datos.add(new Dato(.8, .2, n+18.5));
+        datos.add(new Dato(.1, .8, n+18.6));//L 0.4
+        datos.add(new Dato(.3, .2, n+18.7));
+        datos.add(new Dato(.2, .1, n+18.8));
+        datos.add(new Dato(.4, .3, n+18.9));
+        datos.add(new Dato(.1, .3, n+19.0));
+        datos.add(new Dato(.2, .1, n+19.1));
+        datos.add(new Dato(.1, .1, n+19.2));
+        datos.add(new Dato(.1, .1, n+19.3));
+        datos.add(new Dato(.5, .4, n+19.4));
+        datos.add(new Dato(.2, .3, n+19.5));
+        datos.add(new Dato(.1, .1, n+19.6));
+        datos.add(new Dato(.1, .1, n+19.7));
+        datos.add(new Dato(.8, .7, n+19.8));// oc 1.2
+        datos.add(new Dato(.7, .2, n+19.9));
+        datos.add(new Dato(.9, .2, n+20.0));
+        datos.add(new Dato(.8, .1, n+20.1));
+        datos.add(new Dato(.1, .7, n+20.2));// L 0.4
+        datos.add(new Dato(.2, .1, n+20.3));
+        datos.add(new Dato(.1, .1, n+20.4));
+        datos.add(new Dato(.2, .1, n+20.5));
+        datos.add(new Dato(.3, .1, n+20.6));
+        datos.add(new Dato(.1, .2, n+20.7));
+        datos.add(new Dato(.1, .1, n+20.8));
+        datos.add(new Dato(.1, .1, n+20.9));
+        datos.add(new Dato(.1, .1, n+21.0));
+        datos.add(new Dato(.1, .1, n+21.1));
+        datos.add(new Dato(.3, .2, n+21.2));
+        datos.add(new Dato(.1, .3, n+21.3));
+        datos.add(new Dato(.1, .1, n+21.4));
+        datos.add(new Dato(.1, .1, n+21.5));
+        datos.add(new Dato(.1, .1, n+21.6));
+        datos.add(new Dato(.2, .1, n+21.7));
+        datos.add(new Dato(.1, .1, n+21.8));
+        datos.add(new Dato(.1, .1, n+21.9));
+        datos.add(new Dato(.2, .1, n+22.0));
+        datos.add(new Dato(.1, .1, n+22.1));
+        datos.add(new Dato(.1, .1, n+22.2));
+        datos.add(new Dato(.4, .3, n+22.3));
+        datos.add(new Dato(.1, .4, n+22.4));
+        datos.add(new Dato(.1, .1, n+22.5));
+        datos.add(new Dato(.1, .1, n+22.6));
+        datos.add(new Dato(.1, .1, n+22.7));
+        datos.add(new Dato(.2, .2, n+22.8));
+        datos.add(new Dato(.2, .1, n+22.9));
+        datos.add(new Dato(.3, .2, n+23.0));
+        datos.add(new Dato(.1, .3, n+23.1));
+        datos.add(new Dato(.1, .1, n+23.2));
+        datos.add(new Dato(.2, .1, n+23.3));
+        datos.add(new Dato(.1, .1, n+23.4));
+        datos.add(new Dato(.3, .2, n+23.5));
+        datos.add(new Dato(.1, .2, n+23.6));
+        datos.add(new Dato(.1, .1, n+23.7));
+        datos.add(new Dato(.1, .1, n+23.8));
+        datos.add(new Dato(.1, .1, n+23.9));
+        datos.add(new Dato(.1, .1, n+24.0));
+        datos.add(new Dato(.2, .2, n+24.1));
+        datos.add(new Dato(.2, .1, n+24.2));
+        datos.add(new Dato(.1, .1, n+24.3));
+        datos.add(new Dato(.1, .1, n+24.4));
+        datos.add(new Dato(.1, .1, n+24.5));
+        datos.add(new Dato(.1, .1, n+24.6));
+        datos.add(new Dato(.1, .1, n+24.7));
+        datos.add(new Dato(.1, .1, n+24.8));
+        datos.add(new Dato(.3, .2, n+24.9));
+        datos.add(new Dato(.1, .3, n+25.0));
+        datos.add(new Dato(.1, .1, n+25.1));
+        datos.add(new Dato(.1, .1, n+25.2));
+        datos.add(new Dato(.1, .1, n+25.3));
+        datos.add(new Dato(.3, .2, n+25.4));
+        datos.add(new Dato(.1, .1, n+25.5));
+        datos.add(new Dato(.1, .1, n+25.6));
+        datos.add(new Dato(.2, .1, n+25.7));
+        datos.add(new Dato(.1, .1, n+25.8));
+        datos.add(new Dato(.6, .5, n+25.9));
+        datos.add(new Dato(.1, .4, n+26.0));
+        datos.add(new Dato(.1, .1, n+26.1));
+        datos.add(new Dato(.1, .1, n+26.2));
+        datos.add(new Dato(.1, .1, n+26.3));
+        datos.add(new Dato(.1, .1, n+26.4));
+        datos.add(new Dato(.1, .1, n+26.5));
+        datos.add(new Dato(.1, .1, n+26.6));
+        datos.add(new Dato(.1, .1, n+26.7));
+        datos.add(new Dato(.1, .1, n+26.8));
+        datos.add(new Dato(.1, .1, n+26.9));
+        datos.add(new Dato(.4, .3, n+27.0));
+        datos.add(new Dato(.3, .1, n+27.1));
+        datos.add(new Dato(.1, .2, n+27.2));
+        datos.add(new Dato(.1, .1, n+27.3));
+        datos.add(new Dato(.1, .1, n+27.4));
+        datos.add(new Dato(.1, .1, n+27.5));
+        datos.add(new Dato(.1, .1, n+27.6));
+        datos.add(new Dato(.1, .1, n+27.7));
+        datos.add(new Dato(.1, .1, n+27.8));
+        datos.add(new Dato(.1, .1, n+27.9));
+        datos.add(new Dato(.9, .9, n+28.0));// oc 7.8
+        datos.add(new Dato(.7, .2, n+28.1));
+        datos.add(new Dato(.9, .2, n+28.2));
+        datos.add(new Dato(.8, .1, n+28.3));
+        datos.add(new Dato(.1, .7, n+28.4));// L 0.4
+        datos.add(new Dato(.2, .1, n+28.5));
+        datos.add(new Dato(.1, .1, n+28.6));
+        datos.add(new Dato(.2, .1, n+28.7));
+        datos.add(new Dato(.3, .1, n+28.8));
+        datos.add(new Dato(.1, .2, n+28.9));
+        datos.add(new Dato(.1, .1, n+29.0));
+        datos.add(new Dato(.1, .1, n+29.1));
+        datos.add(new Dato(.1, .1, n+29.2));
+        datos.add(new Dato(.1, .1, n+29.3));
+        datos.add(new Dato(.3, .2, n+29.4));
+        datos.add(new Dato(.1, .3, n+29.5));
+        datos.add(new Dato(.1, .1, n+29.6));
+        datos.add(new Dato(.1, .1, n+29.7));
+        datos.add(new Dato(.1, .1, n+29.8));
+        datos.add(new Dato(.2, .1, n+29.9));
+        datos.add(new Dato(.1, .1, n+30.0));
+        datos.add(new Dato(.1, .1, n+30.1));
+        datos.add(new Dato(.2, .1, n+30.2));
+        datos.add(new Dato(.1, .1, n+30.3));
+        datos.add(new Dato(.1, .1, n+30.4));
+        datos.add(new Dato(.4, .3, n+30.5));
+        datos.add(new Dato(.1, .4, n+30.6));
+        datos.add(new Dato(.1, .1, n+30.7));
+        datos.add(new Dato(.1, .1, n+30.8));
+        datos.add(new Dato(.1, .1, n+30.9));
+        datos.add(new Dato(.2, .2, n+31.0));
+        datos.add(new Dato(.2, .1, n+31.1));
+        datos.add(new Dato(.3, .2, n+31.2));
+        datos.add(new Dato(.1, .3, n+31.3));
+        datos.add(new Dato(.1, .1, n+31.4));
+        datos.add(new Dato(.2, .1, n+31.5));
+        datos.add(new Dato(.1, .1, n+31.6));
+        datos.add(new Dato(.3, .2, n+31.7));
+        datos.add(new Dato(.1, .2, n+31.8));
+        datos.add(new Dato(.1, .1, n+31.9));
+        datos.add(new Dato(.1, .1, n+32.0));
+        datos.add(new Dato(.1, .1, n+32.1));
+        datos.add(new Dato(.1, .1, n+32.2));
+        datos.add(new Dato(.2, .2, n+32.3));
+        datos.add(new Dato(.2, .1, n+32.4));
+        datos.add(new Dato(.1, .1, n+32.5));
+        datos.add(new Dato(.1, .1, n+32.6));
+        datos.add(new Dato(.1, .1, n+32.7));
+        datos.add(new Dato(.1, .1, n+32.8));
+        datos.add(new Dato(.1, .1, n+32.9));
+        datos.add(new Dato(.1, .1, n+33.0));
+        datos.add(new Dato(.3, .2, n+33.1));
+        datos.add(new Dato(.1, .3, n+33.2));
+        datos.add(new Dato(.1, .1, n+33.3));
+        datos.add(new Dato(.1, .1, n+33.4));
+        datos.add(new Dato(.1, .1, n+33.5));
+        datos.add(new Dato(.3, .2, n+33.6));
+        datos.add(new Dato(.1, .1, n+33.7));
+        datos.add(new Dato(.1, .1, n+33.8));
+        datos.add(new Dato(.2, .1, n+33.9));
+        datos.add(new Dato(.1, .1, n+34.0));
+        datos.add(new Dato(.6, .5, n+34.1));
+        datos.add(new Dato(.1, .4, n+34.2));
+        datos.add(new Dato(.1, .1, n+34.3));
+        datos.add(new Dato(.1, .1, n+34.4));
+        datos.add(new Dato(.1, .1, n+34.5));
+        datos.add(new Dato(.1, .1, n+34.6));
+        datos.add(new Dato(.1, .1, n+34.7));
+        datos.add(new Dato(.1, .1, n+34.8));
+        datos.add(new Dato(.1, .1, n+34.9));
+        datos.add(new Dato(.1, .1, n+35.0));
+        datos.add(new Dato(.1, .1, n+35.1));
+        datos.add(new Dato(.4, .3, n+35.2));
+        datos.add(new Dato(.3, .1, n+35.3));
+        datos.add(new Dato(.1, .2, n+35.4));
+        datos.add(new Dato(.1, .1, n+35.5));
+        datos.add(new Dato(.1, .1, n+35.6));
+        datos.add(new Dato(.1, .1, n+35.7));
+        datos.add(new Dato(.1, .1, n+35.8));
+        datos.add(new Dato(.1, .1, n+35.9));
+        datos.add(new Dato(.1, .1, n+36.0));
+        datos.add(new Dato(.1, .1, n+36.1));
+        datos.add(new Dato(.9, .9, n+36.2));// oc 7.8-----Aqui acaba el ciclo
+        
+        
+        
+        
         
         
         
         
         
         /*
-        datos.add(new Dato(.1, .2, n+0));
-        datos.add(new Dato(.2, .2, n+100));
-        datos.add(new Dato(.4, .2, n+200));
-        datos.add(new Dato(.9, .8, n+300));
-        datos.add(new Dato(.6, .4, n+400));
-        datos.add(new Dato(.7, .1, n+500));
-        datos.add(new Dato(.2, .7, n+600));
-        datos.add(new Dato(.4, .2, n+700));
-        datos.add(new Dato(.1, .3, n+800));
-        datos.add(new Dato(.8, .9, n+900));
-        datos.add(new Dato(.7, .1, n+1000));
+        datos.add(new Dato(.7, .2, n+18.2));
+        datos.add(new Dato(.9, .2, n+18.3));
+        datos.add(new Dato(.8, .1, n+18.4));
+        datos.add(new Dato(.1, .7, n+18.5));// L 0.4
+        datos.add(new Dato(.2, .1, n+18.6));
+        datos.add(new Dato(.1, .1, n+18.7));
+        datos.add(new Dato(.2, .1, n+18.8));
+        datos.add(new Dato(.3, .1, n+18.9));
+        datos.add(new Dato(.1, .2, n+19.0));
+        datos.add(new Dato(.1, .1, n+19.1));
+        datos.add(new Dato(.1, .1, n+19.2));
+        datos.add(new Dato(.1, .1, n+19.3));
+        datos.add(new Dato(.1, .1, n+19.4));
+        datos.add(new Dato(.3, .2, n+19.5));
+        datos.add(new Dato(.1, .3, n+19.6));
+        datos.add(new Dato(.1, .1, n+19.7));
+        datos.add(new Dato(.1, .1, n+19.8));
+        datos.add(new Dato(.1, .1, n+19.9));
+        datos.add(new Dato(.2, .1, n+20.0));
+        datos.add(new Dato(.1, .1, n+20.1));
+        datos.add(new Dato(.1, .1, n+20.2));
+        datos.add(new Dato(.2, .1, n+20.3));
+        datos.add(new Dato(.1, .1, n+20.4));
+        datos.add(new Dato(.1, .1, n+20.5));
+        datos.add(new Dato(.4, .3, n+20.6));
+        datos.add(new Dato(.1, .4, n+20.7));
+        datos.add(new Dato(.1, .1, n+20.8));
+        datos.add(new Dato(.1, .1, n+20.9));
+        datos.add(new Dato(.1, .1, n+21.0));
+        datos.add(new Dato(.2, .2, n+21.1));
+        datos.add(new Dato(.2, .1, n+21.2));
+        datos.add(new Dato(.3, .2, n+21.3));
+        datos.add(new Dato(.1, .3, n+21.4));
+        datos.add(new Dato(.1, .1, n+21.5));
+        datos.add(new Dato(.2, .1, n+21.6));
+        datos.add(new Dato(.1, .1, n+21.7));
+        datos.add(new Dato(.3, .2, n+21.8));
+        datos.add(new Dato(.1, .2, n+21.9));
+        datos.add(new Dato(.1, .1, n+22.0));
+        datos.add(new Dato(.1, .1, n+22.1));
+        datos.add(new Dato(.1, .1, n+22.2));
+        datos.add(new Dato(.1, .1, n+22.3));
+        datos.add(new Dato(.2, .2, n+22.4));
+        datos.add(new Dato(.2, .1, n+22.5));
+        datos.add(new Dato(.1, .1, n+22.6));
+        datos.add(new Dato(.1, .1, n+22.7));
+        datos.add(new Dato(.1, .1, n+22.8));
+        datos.add(new Dato(.1, .1, n+22.9));
+        datos.add(new Dato(.1, .1, n+23.0));
+        datos.add(new Dato(.1, .1, n+23.1));
+        datos.add(new Dato(.3, .2, n+23.2));
+        datos.add(new Dato(.1, .3, n+23.3));
+        datos.add(new Dato(.1, .1, n+23.4));
+        datos.add(new Dato(.1, .1, n+23.5));
+        datos.add(new Dato(.1, .1, n+23.6));
+        datos.add(new Dato(.3, .2, n+23.7));
+        datos.add(new Dato(.1, .1, n+23.8));
+        datos.add(new Dato(.1, .1, n+23.9));
+        datos.add(new Dato(.2, .1, n+24.0));
+        datos.add(new Dato(.1, .1, n+24.1));
+        datos.add(new Dato(.6, .5, n+24.2));
+        datos.add(new Dato(.1, .4, n+24.3));
+        datos.add(new Dato(.1, .1, n+24.4));
+        datos.add(new Dato(.1, .1, n+24.5));
+        datos.add(new Dato(.1, .1, n+24.6));
+        datos.add(new Dato(.1, .1, n+24.7));
+        datos.add(new Dato(.1, .1, n+24.8));
+        datos.add(new Dato(.1, .1, n+24.9));
+        datos.add(new Dato(.1, .1, n+25.0));
+        datos.add(new Dato(.1, .1, n+25.1));
+        datos.add(new Dato(.1, .1, n+25.2));
+        datos.add(new Dato(.4, .3, n+25.3));
+        datos.add(new Dato(.3, .1, n+25.4));
+        datos.add(new Dato(.1, .2, n+25.5));
+        datos.add(new Dato(.1, .1, n+25.6));
+        datos.add(new Dato(.1, .1, n+25.7));
+        datos.add(new Dato(.1, .1, n+25.8));
+        datos.add(new Dato(.1, .1, n+25.9));
+        datos.add(new Dato(.1, .1, n+26.0));
+        datos.add(new Dato(.1, .1, n+26.1));
+        datos.add(new Dato(.9, .9, n+26.2));// oc 7.8
+        datos.add(new Dato(.7, .2, n+26.3));
+        datos.add(new Dato(.7, .1, n+26.4));
+        datos.add(new Dato(.8, .2, n+26.5));
+        datos.add(new Dato(.1, .8, n+26.6));//L 0.4
+        datos.add(new Dato(.3, .2, n+26.7));
+        datos.add(new Dato(.2, .1, n+26.8));
+        datos.add(new Dato(.4, .3, n+26.9));
+        datos.add(new Dato(.1, .3, n+27.0));
+        datos.add(new Dato(.2, .1, n+27.1));
+        datos.add(new Dato(.1, .1, n+27.2));
+        datos.add(new Dato(.1, .1, n+27.3));
+        datos.add(new Dato(.5, .4, n+27.4));
+        datos.add(new Dato(.2, .3, n+27.5));
+        datos.add(new Dato(.1, .1, n+27.6));
+        datos.add(new Dato(.1, .1, n+27.7));
+        datos.add(new Dato(.8, .7, n+27.8));// oc 1.2
+        datos.add(new Dato(.7, .2, n+27.9));
+        datos.add(new Dato(.9, .8, n+28.0));
+        datos.add(new Dato(.8, .1, n+28.1));
+        datos.add(new Dato(.1, .7, n+28.2));// L 0.4
+        datos.add(new Dato(.2, .1, n+28.3));
+        datos.add(new Dato(.1, .1, n+28.4));
+        datos.add(new Dato(.2, .1, n+28.5));
+        datos.add(new Dato(.3, .1, n+28.6));
+        datos.add(new Dato(.1, .2, n+28.7));
+        datos.add(new Dato(.1, .1, n+28.8));
+        datos.add(new Dato(.1, .1, n+28.9));
+        datos.add(new Dato(.1, .1, n+29.0));
+        datos.add(new Dato(.1, .1, n+29.1));
+        datos.add(new Dato(.3, .2, n+29.2));
+        datos.add(new Dato(.1, .3, n+29.3));
+        datos.add(new Dato(.1, .1, n+29.4));
+        datos.add(new Dato(.1, .1, n+29.5));
+        datos.add(new Dato(.1, .1, n+29.6));
+        datos.add(new Dato(.2, .1, n+29.7));
+        datos.add(new Dato(.1, .1, n+29.8));
+        datos.add(new Dato(.1, .1, n+29.9));
+        datos.add(new Dato(.2, .1, n+30.0));
+        datos.add(new Dato(.1, .1, n+30.1));
+        datos.add(new Dato(.1, .1, n+30.2));
+        datos.add(new Dato(.4, .3, n+30.3));
+        datos.add(new Dato(.1, .4, n+30.4));
+        datos.add(new Dato(.1, .1, n+30.5));
+        datos.add(new Dato(.1, .1, n+30.6));
+        datos.add(new Dato(.1, .1, n+30.7));
+        datos.add(new Dato(.2, .2, n+30.8));
+        datos.add(new Dato(.2, .1, n+30.9));
+        datos.add(new Dato(.3, .2, n+31.0));
+        datos.add(new Dato(.1, .3, n+31.1));
+        datos.add(new Dato(.1, .1, n+31.2));
+        datos.add(new Dato(.2, .1, n+31.3));
+        datos.add(new Dato(.1, .1, n+31.4));
+        datos.add(new Dato(.3, .2, n+31.5));
+        datos.add(new Dato(.1, .2, n+31.6));
+        datos.add(new Dato(.1, .1, n+31.7));
+        datos.add(new Dato(.1, .1, n+31.8));
+        datos.add(new Dato(.1, .1, n+31.9));
+        datos.add(new Dato(.1, .1, n+32.0));
+        datos.add(new Dato(.2, .2, n+32.1));
+        datos.add(new Dato(.2, .1, n+32.2));
+        datos.add(new Dato(.1, .1, n+32.3));
+        datos.add(new Dato(.1, .1, n+32.4));
+        datos.add(new Dato(.1, .1, n+32.5));
+        datos.add(new Dato(.1, .1, n+32.6));
+        datos.add(new Dato(.1, .1, n+32.7));
+        datos.add(new Dato(.1, .1, n+32.8));
+        datos.add(new Dato(.3, .2, n+32.9));
+        datos.add(new Dato(.1, .3, n+33.0));
+        datos.add(new Dato(.1, .1, n+33.1));
+        datos.add(new Dato(.1, .1, n+33.2));
+        datos.add(new Dato(.1, .1, n+33.3));
+        datos.add(new Dato(.3, .2, n+33.4));
+        datos.add(new Dato(.1, .1, n+33.5));
+        datos.add(new Dato(.1, .1, n+33.6));
+        datos.add(new Dato(.2, .1, n+33.7));
+        datos.add(new Dato(.1, .1, n+33.8));
+        datos.add(new Dato(.6, .5, n+33.9));
+        datos.add(new Dato(.1, .4, n+34.0));
+        datos.add(new Dato(.1, .1, n+34.1));
+        datos.add(new Dato(.1, .1, n+34.2));
+        datos.add(new Dato(.1, .1, n+34.3));
+        datos.add(new Dato(.1, .1, n+34.4));
+        datos.add(new Dato(.1, .1, n+34.5));
+        datos.add(new Dato(.1, .1, n+34.6));
+        datos.add(new Dato(.1, .1, n+34.7));
+        datos.add(new Dato(.1, .1, n+34.8));
+        datos.add(new Dato(.1, .1, n+34.9));
+        datos.add(new Dato(.4, .3, n+35.0));
+        datos.add(new Dato(.3, .1, n+35.1));
+        datos.add(new Dato(.1, .2, n+35.2));
+        datos.add(new Dato(.1, .1, n+35.3));
+        datos.add(new Dato(.1, .1, n+35.4));
+        datos.add(new Dato(.1, .1, n+35.5));
+        datos.add(new Dato(.1, .1, n+35.6));
+        datos.add(new Dato(.1, .1, n+35.7));
+        datos.add(new Dato(.1, .1, n+35.8));
+        datos.add(new Dato(.9, .9, n+35.9));// oc 7.8
+        datos.add(new Dato(.7, .2, n+36.0));
+        datos.add(new Dato(.9, .2, n+36.1));
+        datos.add(new Dato(.8, .1, n+36.2));
+        datos.add(new Dato(.1, .7, n+36.3));// L 0.4
+        datos.add(new Dato(.2, .1, n+36.4));
+        datos.add(new Dato(.1, .1, n+36.5));
+        datos.add(new Dato(.2, .1, n+36.6));
+        datos.add(new Dato(.3, .1, n+36.7));
+        datos.add(new Dato(.1, .2, n+36.8));
+        datos.add(new Dato(.1, .1, n+36.9));
+        datos.add(new Dato(.1, .1, n+37.0));
+        datos.add(new Dato(.1, .1, n+37.1));
+        datos.add(new Dato(.1, .1, n+37.2));
+        datos.add(new Dato(.3, .2, n+37.3));
+        datos.add(new Dato(.1, .3, n+37.4));
+        datos.add(new Dato(.1, .1, n+37.5));
+        datos.add(new Dato(.1, .1, n+37.6));
+        datos.add(new Dato(.1, .1, n+37.7));
+        datos.add(new Dato(.2, .1, n+37.8));
+        datos.add(new Dato(.1, .1, n+37.9));
+        datos.add(new Dato(.1, .1, n+38.0));
+        datos.add(new Dato(.2, .1, n+38.1));
+        datos.add(new Dato(.1, .1, n+38.3));
+        datos.add(new Dato(.1, .1, n+38.4));
+        datos.add(new Dato(.4, .3, n+38.5));
+        datos.add(new Dato(.1, .4, n+38.6));
+        datos.add(new Dato(.1, .1, n+38.7));
+        datos.add(new Dato(.1, .1, n+38.8));
+        datos.add(new Dato(.1, .1, n+38.9));
+        datos.add(new Dato(.2, .2, n+39.0));
+        datos.add(new Dato(.2, .1, n+39.1));
+        datos.add(new Dato(.3, .2, n+39.2));
+        datos.add(new Dato(.1, .3, n+39.3));
+        datos.add(new Dato(.1, .1, n+39.4));
+        datos.add(new Dato(.2, .1, n+39.5));
+        datos.add(new Dato(.1, .1, n+39.6));
+        datos.add(new Dato(.3, .2, n+39.7));
+        datos.add(new Dato(.1, .2, n+39.8));
+        datos.add(new Dato(.1, .1, n+39.9));
+        datos.add(new Dato(.1, .1, n+40.0));
+        datos.add(new Dato(.1, .1, n+40.1));
+        datos.add(new Dato(.1, .1, n+40.2));
+        datos.add(new Dato(.2, .2, n+40.3));
+        datos.add(new Dato(.2, .1, n+40.4));
+        datos.add(new Dato(.1, .1, n+40.5));
+        datos.add(new Dato(.1, .1, n+40.6));
+        datos.add(new Dato(.1, .1, n+40.7));
+        datos.add(new Dato(.1, .1, n+40.8));
+        datos.add(new Dato(.1, .1, n+40.9));
+        datos.add(new Dato(.1, .1, n+41.0));
+        datos.add(new Dato(.3, .2, n+41.1));
+        datos.add(new Dato(.1, .3, n+41.2));
+        datos.add(new Dato(.1, .1, n+41.3));
+        datos.add(new Dato(.1, .1, n+41.4));
+        datos.add(new Dato(.1, .1, n+41.5));
+        datos.add(new Dato(.3, .2, n+41.6));
+        datos.add(new Dato(.1, .1, n+41.7));
+        datos.add(new Dato(.1, .1, n+41.8));
+        datos.add(new Dato(.2, .1, n+41.9));
+        datos.add(new Dato(.1, .1, n+41.0));
+        datos.add(new Dato(.6, .5, n+41.1));
+        datos.add(new Dato(.1, .4, n+41.2));
+        datos.add(new Dato(.1, .1, n+41.3));
+        datos.add(new Dato(.1, .1, n+41.4));
+        datos.add(new Dato(.1, .1, n+41.5));
+        datos.add(new Dato(.1, .1, n+41.6));
+        datos.add(new Dato(.1, .1, n+41.7));
+        datos.add(new Dato(.1, .1, n+41.8));
+        datos.add(new Dato(.1, .1, n+41.9));
+        datos.add(new Dato(.1, .1, n+42.0));
+        datos.add(new Dato(.1, .1, n+42.1));
+        datos.add(new Dato(.4, .3, n+42.2));
+        datos.add(new Dato(.3, .1, n+42.3));
+        datos.add(new Dato(.1, .2, n+42.4));
+        datos.add(new Dato(.1, .1, n+42.5));
+        datos.add(new Dato(.1, .1, n+42.6));
+        datos.add(new Dato(.1, .1, n+42.7));
+        datos.add(new Dato(.1, .1, n+42.8));
+        datos.add(new Dato(.1, .1, n+42.9));
+        datos.add(new Dato(.1, .1, n+43.0));
+        datos.add(new Dato(.9, .9, n+43.1));// oc 7.8
+        datos.add(new Dato(.7, .2, n+43.2));
+        datos.add(new Dato(.9, .2, n+43.3));
+        datos.add(new Dato(.8, .1, n+43.4));
+        datos.add(new Dato(.1, .7, n+43.5));// L 0.4
+        datos.add(new Dato(.2, .1, n+43.6));
+        datos.add(new Dato(.1, .1, n+43.7));
+        datos.add(new Dato(.2, .1, n+43.8));
+        datos.add(new Dato(.3, .1, n+43.9));
+        datos.add(new Dato(.1, .2, n+44.0));
+        datos.add(new Dato(.1, .1, n+44.1));
+        datos.add(new Dato(.1, .1, n+44.2));
+        datos.add(new Dato(.1, .1, n+44.3));
+        datos.add(new Dato(.1, .1, n+44.4));
+        datos.add(new Dato(.3, .2, n+44.5));
+        datos.add(new Dato(.1, .3, n+44.6));
+        datos.add(new Dato(.1, .1, n+44.7));
+        datos.add(new Dato(.1, .1, n+44.8));
+        datos.add(new Dato(.1, .1, n+44.9));
+        datos.add(new Dato(.2, .1, n+45.0));
+        datos.add(new Dato(.1, .1, n+45.1));
+        datos.add(new Dato(.1, .1, n+45.2));
+        datos.add(new Dato(.2, .1, n+45.3));
+        datos.add(new Dato(.1, .1, n+45.4));
+        datos.add(new Dato(.1, .1, n+45.5));
+        datos.add(new Dato(.4, .3, n+45.6));
+        datos.add(new Dato(.1, .4, n+45.7));
+        datos.add(new Dato(.1, .1, n+45.8));
+        datos.add(new Dato(.1, .1, n+45.9));
+        datos.add(new Dato(.1, .1, n+46.0));
+        datos.add(new Dato(.2, .2, n+46.1));
+        datos.add(new Dato(.2, .1, n+46.2));
+        datos.add(new Dato(.3, .2, n+46.3));
+        datos.add(new Dato(.1, .3, n+46.4));
+        datos.add(new Dato(.1, .1, n+46.5));
+        datos.add(new Dato(.2, .1, n+46.6));
+        datos.add(new Dato(.1, .1, n+46.7));
+        datos.add(new Dato(.3, .2, n+46.8));
+        datos.add(new Dato(.1, .2, n+46.9));
+        datos.add(new Dato(.1, .1, n+47.0));
+        datos.add(new Dato(.1, .1, n+47.1));
+        datos.add(new Dato(.1, .1, n+47.2));
+        datos.add(new Dato(.1, .1, n+47.3));
+        datos.add(new Dato(.2, .2, n+47.4));
+        datos.add(new Dato(.2, .1, n+47.5));
+        datos.add(new Dato(.1, .1, n+47.6));
+        datos.add(new Dato(.1, .1, n+47.7));
+        datos.add(new Dato(.1, .1, n+47.8));
+        datos.add(new Dato(.1, .1, n+47.9));
+        datos.add(new Dato(.1, .1, n+48.0));
+        datos.add(new Dato(.1, .1, n+48.1));
+        datos.add(new Dato(.3, .2, n+48.2));
+        datos.add(new Dato(.1, .3, n+48.3));
+        datos.add(new Dato(.1, .1, n+48.4));
+        datos.add(new Dato(.1, .1, n+48.5));
+        datos.add(new Dato(.1, .1, n+48.6));
+        datos.add(new Dato(.3, .2, n+48.7));
+        datos.add(new Dato(.1, .1, n+48.8));
+        datos.add(new Dato(.1, .1, n+48.9));
+        datos.add(new Dato(.2, .1, n+49.0));
+        datos.add(new Dato(.1, .1, n+49.1));
+        datos.add(new Dato(.6, .5, n+49.2));
+        datos.add(new Dato(.1, .4, n+49.3));
+        datos.add(new Dato(.1, .1, n+49.4));
+        datos.add(new Dato(.1, .1, n+49.5));
+        datos.add(new Dato(.1, .1, n+49.6));
+        datos.add(new Dato(.1, .1, n+49.7));
+        datos.add(new Dato(.1, .1, n+49.8));
+        datos.add(new Dato(.1, .1, n+49.9));
+        datos.add(new Dato(.1, .1, n+50.0));
+        datos.add(new Dato(.1, .1, n+50.1));
+        datos.add(new Dato(.1, .1, n+50.2));
+        datos.add(new Dato(.4, .3, n+50.3));
+        datos.add(new Dato(.3, .1, n+50.4));
+        datos.add(new Dato(.1, .2, n+50.5));
+        datos.add(new Dato(.1, .1, n+50.6));
+        datos.add(new Dato(.1, .1, n+50.7));
+        datos.add(new Dato(.1, .1, n+50.8));
+        datos.add(new Dato(.1, .1, n+50.9));
+        datos.add(new Dato(.1, .1, n+51.0));
+        datos.add(new Dato(.1, .1, n+51.1));
+        datos.add(new Dato(.9, .9, n+51.2));// oc 7.8
+       
+       
         
-        datos.add(new Dato(.9, .2, n+1100));
-        datos.add(new Dato(.2, .8, n+1200));
-        datos.add(new Dato(.1, .2, n+1300));
-        datos.add(new Dato(.3, .2, n+1400));
-        datos.add(new Dato(.8, .7, n+1500));
-        */
+        
+        
+        
         
         /*
-        datos.add(new Dato(.1, .2, n+0));
-        datos.add(new Dato(.2, .2, n+100));
-        datos.add(new Dato(.4, .2, n+200));
-        datos.add(new Dato(.9, .8, n+300));
-        datos.add(new Dato(.6, .4, n+400));
-        datos.add(new Dato(.7, .1, n+500));
-        datos.add(new Dato(.2, .7, n+600));
-        datos.add(new Dato(.4, .2, n+700));
-        datos.add(new Dato(.1, .3, n+800));
-        datos.add(new Dato(.8, .9, n+900));
-        datos.add(new Dato(.1, .7, n+1000));
-        datos.add(new Dato(.2, .1, n+1100));
-        datos.add(new Dato(.3, .2, n+1200));
-        datos.add(new Dato(.1, .2, n+1300));
-        datos.add(new Dato(.6, .8, n+1400));
-        datos.add(new Dato(.5, .2, n+1500));
-        datos.add(new Dato(.5, .0, n+1600));
-        datos.add(new Dato(.1, .7, n+1700));
-        datos.add(new Dato(.2, .1, n+1800));
-        datos.add(new Dato(.3, .1, n+1900));
-        datos.add(new Dato(.1, .2, n+2000));
-        datos.add(new Dato(.9, .9, n+2100));
-        datos.add(new Dato(.8, .1, n+2200));
-        datos.add(new Dato(.2, .8, n+2300));
-        datos.add(new Dato(.7, .8, n+2400));
-        datos.add(new Dato(.5, .3, n+2500));
-        datos.add(new Dato(.6, .1, n+2600));
-        datos.add(new Dato(.1, .7, n+2700));
-        datos.add(new Dato(.2, .1, n+2800));
-        datos.add(new Dato(.3, .1, n+2900));
-        datos.add(new Dato(.1, .2, n+3000));
-        datos.add(new Dato(.9, .9, n+3100));
-        datos.add(new Dato(.8, .1, n+3200));
-  
-        datos.add(new Dato(.1, .2, n+3300));
-        datos.add(new Dato(.2, .2, n+3400));
-        datos.add(new Dato(.4, .2, n+3500));
-        datos.add(new Dato(.9, .8, n+3600));
-        datos.add(new Dato(.6, .4, n+3700));
-        datos.add(new Dato(.7, .1, n+3800));
-        datos.add(new Dato(.2, .7, n+3900));
-        datos.add(new Dato(.4, .2, n+4000));
-        datos.add(new Dato(.1, .3, n+4100));
-        datos.add(new Dato(.8, .9, n+4200));
-        datos.add(new Dato(.1, .7, n+4300));
-        datos.add(new Dato(.2, .1, n+4400));
-        datos.add(new Dato(.3, .2, n+4500));
-        datos.add(new Dato(.1, .2, n+4600));
-        datos.add(new Dato(.6, .8, n+4700));
-        datos.add(new Dato(.5, .2, n+4800));
-        datos.add(new Dato(.5, .0, n+4900));
-        datos.add(new Dato(.1, .7, n+5000));
-        datos.add(new Dato(.2, .1, n+5100));
-        datos.add(new Dato(.3, .1, n+5200));
-        datos.add(new Dato(.1, .2, n+5300));
-        datos.add(new Dato(.9, .9, n+5400));
-        datos.add(new Dato(.8, .1, n+5500));
-        datos.add(new Dato(.2, .8, n+5600));
-        datos.add(new Dato(.7, .8, n+5700));
-        datos.add(new Dato(.5, .3, n+5800));
-        datos.add(new Dato(.6, .1, n+5900));
-        datos.add(new Dato(.1, .7, n+6000));
-        datos.add(new Dato(.2, .1, n+6100));
-        datos.add(new Dato(.3, .1, n+6200));
-        datos.add(new Dato(.1, .2, n+6300));
-        datos.add(new Dato(.9, .9, n+6400));
-        datos.add(new Dato(.8, .1, n+6500));
+        datos.add(new Dato(.3, .2, n+10.0));
+        datos.add(new Dato(.1, .3, n+10.1));
+        datos.add(new Dato(.1, .9, n+10.2));
+        datos.add(new Dato(.2, .1, n+10.3));
+        datos.add(new Dato(.9, .8, n+10.4));
+        datos.add(new Dato(.3, .2, n+10.5));
+        datos.add(new Dato(.9, .8, n+10.6));
+        datos.add(new Dato(.1, .9, n+10.7));
+        datos.add(new Dato(.2, .1, n+10.8));
+        datos.add(new Dato(.9, .8, n+10.9));
+        datos.add(new Dato(.3, .2, n+11.0));
+        datos.add(new Dato(.9, .8, n+11.1));
+        datos.add(new Dato(.1, .9, n+11.2));
+        datos.add(new Dato(.2, .1, n+11.3));
+        datos.add(new Dato(.9, .8, n+11.4));
+        datos.add(new Dato(.3, .2, n+11.5));
+        datos.add(new Dato(.9, .8, n+11.6));
+        datos.add(new Dato(.1, .9, n+11.7));
+        datos.add(new Dato(.2, .1, n+11.8));
+        datos.add(new Dato(.9, .8, n+11.9));
+        datos.add(new Dato(.3, .2, n+12.0));
+        datos.add(new Dato(.9, .8, n+12.1));
+        datos.add(new Dato(.1, .9, n+12.2));
+        datos.add(new Dato(.2, .1, n+12.3));
+        datos.add(new Dato(.9, .8, n+12.4));
+        datos.add(new Dato(.3, .2, n+12.5));
+        datos.add(new Dato(.9, .8, n+12.6));
+        datos.add(new Dato(.1, .9, n+12.7));
+        datos.add(new Dato(.2, .1, n+12.8));
+        datos.add(new Dato(.9, .8, n+12.9));
+        datos.add(new Dato(.3, .2, n+13.0));
+        datos.add(new Dato(.9, .8, n+13.1));
+        datos.add(new Dato(.1, .9, n+13.2));
+        datos.add(new Dato(.2, .1, n+13.3));
+        datos.add(new Dato(.9, .8, n+13.4));
+        datos.add(new Dato(.3, .2, n+13.5));
+        datos.add(new Dato(.9, .8, n+13.6));
+        datos.add(new Dato(.1, .9, n+13.7));
+        datos.add(new Dato(.2, .1, n+13.8));
+        datos.add(new Dato(.9, .8, n+13.9));
+        datos.add(new Dato(.3, .2, n+14.0));
+        datos.add(new Dato(.9, .8, n+14.1));
+        datos.add(new Dato(.1, .9, n+14.2));
+        datos.add(new Dato(.2, .1, n+14.3));
+        datos.add(new Dato(.9, .8, n+14.4));
+        datos.add(new Dato(.3, .2, n+14.5));
+        datos.add(new Dato(.9, .8, n+14.6));
+        datos.add(new Dato(.1, .9, n+14.7));
+        datos.add(new Dato(.2, .1, n+14.8));
+        datos.add(new Dato(.9, .8, n+14.9));
+        datos.add(new Dato(.3, .2, n+15.0));
+        datos.add(new Dato(.9, .8, n+15.1));
+        datos.add(new Dato(.1, .9, n+15.2));
+        datos.add(new Dato(.2, .1, n+15.3));
+        datos.add(new Dato(.9, .8, n+15.4));
+        datos.add(new Dato(.3, .2, n+15.5));
+        datos.add(new Dato(.9, .8, n+15.6));
+        datos.add(new Dato(.1, .9, n+15.7));
+        datos.add(new Dato(.2, .1, n+15.8));
+        datos.add(new Dato(.9, .8, n+15.9));
+        datos.add(new Dato(.3, .2, n+16.0));
+        datos.add(new Dato(.9, .8, n+16.1));
+        datos.add(new Dato(.1, .9, n+16.2));
+        datos.add(new Dato(.2, .1, n+16.3));
+        datos.add(new Dato(.9, .8, n+16.4));
+        datos.add(new Dato(.3, .2, n+16.5));
+        datos.add(new Dato(.9, .8, n+16.6));
+        datos.add(new Dato(.1, .9, n+16.7));
+        datos.add(new Dato(.2, .1, n+16.8));
+        datos.add(new Dato(.9, .8, n+16.9));
+        datos.add(new Dato(.3, .2, n+17.0));
+        datos.add(new Dato(.9, .8, n+17.1));
+        datos.add(new Dato(.1, .9, n+17.2));
+        datos.add(new Dato(.2, .1, n+17.3));
+        datos.add(new Dato(.9, .8, n+17.4));
+        datos.add(new Dato(.3, .2, n+17.5));
+        datos.add(new Dato(.9, .8, n+17.6));
+        datos.add(new Dato(.1, .9, n+17.7));
+        datos.add(new Dato(.2, .1, n+17.8));
+        datos.add(new Dato(.9, .8, n+17.9));
+        datos.add(new Dato(.3, .2, n+18.0));
+        datos.add(new Dato(.9, .8, n+18.1));
+        datos.add(new Dato(.1, .9, n+18.2));
+        datos.add(new Dato(.2, .1, n+18.3));
+        datos.add(new Dato(.9, .8, n+18.4));
+        datos.add(new Dato(.3, .2, n+18.5));
+        datos.add(new Dato(.9, .8, n+18.6));
+        datos.add(new Dato(.1, .9, n+18.7));
+        datos.add(new Dato(.2, .1, n+18.8));
+        datos.add(new Dato(.9, .8, n+18.9));
+        
+        
+        
+        
+        datos.add(new Dato(.1, .2, n+.0));
+        datos.add(new Dato(.1, .2, n+.1));
+        datos.add(new Dato(.8, .9, n+.2));
+        datos.add(new Dato(.6, .2, n+.3));
+        datos.add(new Dato(.7, .1, n+.4));
+        datos.add(new Dato(.1, .8, n+.5));//L 300 oc 200
+        datos.add(new Dato(.1, .1, n+.6));
+        datos.add(new Dato(.8, .8, n+.7));///////
+        datos.add(new Dato(.7, .1, n+.8));
+        datos.add(new Dato(.1, .8, n+.9));
+        datos.add(new Dato(.1, .1, n+1.0));// L200 oc300
+        datos.add(new Dato(.2, .1, n+1.1));
+        datos.add(new Dato(.9, .8, n+1.2));/////
+        datos.add(new Dato(.1, .9, n+1.3));
+        datos.add(new Dato(.2, .1, n+1.4));//L100 oc 200
+        datos.add(new Dato(.9, .8, n+1.5));///
+        datos.add(new Dato(.7, .2, n+1.6));
+        datos.add(new Dato(.8, .1, n+1.7));//L300 oc 200
+        datos.add(new Dato(.1, .7, n+1.8));
+        datos.add(new Dato(.3, .2, n+1.9));
+        datos.add(new Dato(.9, .8, n+2.0));/////
+        datos.add(new Dato(.8, .1, n+2.1));
+        datos.add(new Dato(.1, .7, n+2.2));
+        datos.add(new Dato(.2, .1, n+2.3));/// L200 oc 300
+        datos.add(new Dato(.3, .2, n+2.4));
+        datos.add(new Dato(.9, .8, n+2.5));/////
+        datos.add(new Dato(.1, .9, n+2.6));
+        datos.add(new Dato(.2, .1, n+2.7));//L100 oc 200
+        datos.add(new Dato(.9, .8, n+2.8));///
+        
+        
+        datos.add(new Dato(.6, .2, n+2.9));
+        datos.add(new Dato(.7, .1, n+3.0));
+        datos.add(new Dato(.1, .8, n+3.1));//L 300 oc 200
+        datos.add(new Dato(.1, .1, n+3.2));
+        datos.add(new Dato(.8, .8, n+3.3));///////
+        datos.add(new Dato(.7, .1, n+3.4));
+        datos.add(new Dato(.1, .8, n+3.5));
+        datos.add(new Dato(.1, .1, n+3.6));// L200 oc300
+        datos.add(new Dato(.2, .1, n+3.7));
+        datos.add(new Dato(.9, .8, n+3.8));/////
+        datos.add(new Dato(.1, .9, n+3.9));
+        datos.add(new Dato(.2, .1, n+4.0));//L100 oc 200
+        datos.add(new Dato(.9, .8, n+4.1));///
+        datos.add(new Dato(.7, .2, n+4.2));
+        datos.add(new Dato(.8, .1, n+4.3));//L300 oc 200
+        datos.add(new Dato(.1, .7, n+4.4));
+        datos.add(new Dato(.3, .2, n+4.5));
+        datos.add(new Dato(.9, .8, n+4.6));/////
+        datos.add(new Dato(.8, .1, n+4.7));
+        datos.add(new Dato(.1, .7, n+4.8));
+        datos.add(new Dato(.2, .1, n+4.9));/// L200 oc 300
+        datos.add(new Dato(.3, .2, n+5.0));
+        datos.add(new Dato(.9, .8, n+5.1));/////
+        datos.add(new Dato(.1, .9, n+5.2));
+        datos.add(new Dato(.2, .1, n+5.3));//L100 oc 200
+        datos.add(new Dato(.9, .8, n+5.4));///
         */
-        //convertirDatos(datos);
-        //System.out.println(guardarDestellos(datos));
+        
+        
         destellos = guardarDestellos(datos);
+        System.out.println("\n"+"\n"+"\n"+"\n");
         System.out.println(destellos);
+        System.out.println(destellos.size());
         ciclo = getCiclo(destellos);
+        System.out.println(ciclo);
         if (ciclo.isEmpty())
             System.out.println("No se ha encontrado ningún ciclo.");
         else{
@@ -362,38 +1074,7 @@ public class Buffer {
             System.out.println("El ciclo es: "+ciclo);
         
         }
-            
-    }
-    
-    public void readData(){
-        String[] input;
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         
-        while(true) {
-            // 0.1 0.6 -> "0.1 0.6"
-            String line;
-            try {
-                input = br.readLine().split(" ");
-            
-                Date f = new Date();
-                Dato d = new Dato(
-                    Double.parseDouble(input[0]),
-                    Double.parseDouble(input[1]),
-                    f.getTime()
-                );
-
-                System.out.println(d);
-                datos.add(d);
-                
-                // Analizar todo el buffer de datos
-                // Si detectamos un ciclo
-                    // Descomponemos en las partes que nos interesan
-                    // Aplicamos filtros
-                    // Obtenemos y mostramos resultados (o lo que sea)
-                    // Limpiamos el buffer
-            } catch (IOException ex) {
-                Logger.getLogger(Buffer.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        return ciclo;
     }
 }
