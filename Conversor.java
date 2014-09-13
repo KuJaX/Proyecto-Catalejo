@@ -18,21 +18,26 @@ public class Conversor {
     public static void main(String[] args) {
         
         Metodos a = new Metodos();
-     
+        Buffer b = new Buffer();
+        ArrayList <Destello> ciclo = b.simular();
+        int repeticiones = a.numeroDeRepeticiones(ciclo);
+        double tiempoTotal = a.tiempoTotal(ciclo);
+        
         ArrayList<Resultado> faros = a.parseFile("results.txt");
         System.out.println("Todos los faros:");
         System.out.println(faros);
         
-        ArrayList<Resultado> resultados = a.filtrarPorTiempo(faros, 19, 2);
+        ArrayList<Resultado> resultados = a.filtrarPorTiempo(faros, tiempoTotal, 2);
         System.out.println("Faros filtrados:");
         System.out.println(resultados);
         
-        ArrayList<Resultado> resultadosPorRepeticiones = a.filtrarPorRepeticiones(resultados, 5, 1);
+        ArrayList<Resultado> resultadosPorRepeticiones = a.filtrarPorRepeticiones(resultados, repeticiones, 1);
         System.out.println("Faros filtrados:");
         System.out.println(resultadosPorRepeticiones);
         
         ArrayList<Resultado> calculoPorcentajes = a.calcularPorcentaje(resultadosPorRepeticiones);
         System.out.println("Faros filtrados segun mayor probabilidad:");
         System.out.println(calculoPorcentajes);
+        
     }   
 }
