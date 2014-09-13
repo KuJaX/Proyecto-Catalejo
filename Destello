@@ -4,20 +4,54 @@ public class Destello implements Serializable {
     private Double tiempoEncendido = null;
     private Double tiempoApagado = null;
     
+    public double redondear( double numero) {
+        return numero = (Math.round(numero * 10.0)) / 10.0;
+    }
     
-    public boolean comparador(Destello d, int margen) {
-        double encendidoRedondeoArriba = Math.ceil(tiempoEncendido-margen);
+    public boolean comparador(Destello d, double margen) {
+        double dEncendidoRedondeoArriba = redondear (d.tiempoEncendido+margen);
+        System.out.println("Este es dEncendidoRedondeoArriba: "+dEncendidoRedondeoArriba+"     d.tiempoEncendido"+d.tiempoEncendido+"     margen: "+margen+"\n\n");
+        double dApagadoRedondeoArriba = redondear (d.tiempoApagado+margen);
+        System.out.println("Este es dApagadoRedondeoArriba: "+dApagadoRedondeoArriba+"     d.tiempoApagado"+d.tiempoApagado+"     margen: "+margen+"\n\n");
+        double dEncendidoRedondeoAbajo = redondear (d.tiempoEncendido-margen);
+        System.out.println("Este es dEncendidoRedondeoAbajo: "+dEncendidoRedondeoAbajo+"     d.tiempoEncendido"+d.tiempoEncendido+"     margen: "+margen+"\n\n");
+        double dApagadoRedondeoAbajo = redondear (d.tiempoApagado-margen);
+        System.out.println("Este es dApagadoRedondeoAbajo: "+dApagadoRedondeoAbajo+"     d.tiempoApagado"+d.tiempoApagado+"     margen: "+margen+"\n\n");
+        
+        System.out.println("Este es tiempoEncendido: "+tiempoEncendido+"\n\n");
+        System.out.println("Este es tiempoApagado: "+tiempoApagado+"\n\n");
+        
+        /*
+        double encendidoRedondeoArriba = Math.ceil(tiempoEncendido+margen);
+        System.out.println("Este es encendidoRedondeoArriba: "+ encendidoRedondeoArriba+"\n\n");
         double encendidoRedondeoAbajo = Math.floor(tiempoEncendido-margen);
-        double apagadoRedondeoArriba = Math.ceil(tiempoApagado-margen);
+        System.out.println("Este es encendidoRedondeoAbajo: "+ encendidoRedondeoAbajo+"\n\n");
+        double apagadoRedondeoArriba = Math.ceil(tiempoApagado+margen);
+        System.out.println("Este es apagadoRedondeoArriba: "+ apagadoRedondeoArriba+"\n\n");
         double apagadoRedondeoAbajo = Math.floor(tiempoApagado-margen);
+        System.out.println("Este es apagadoRedondeoAbajo: "+ apagadoRedondeoAbajo+"\n\n");
         
-        double dEncendidoRedondeoArriba = Math.ceil(d.tiempoEncendido-margen);
+        double dEncendidoRedondeoArriba = Math.ceil(d.tiempoEncendido+margen);
+        System.out.println("Este es dEncendidoRedondeoArriba: "+ dEncendidoRedondeoArriba+"\n\n");
         double dEncendidoRedondeoAbajo = Math.floor(d.tiempoEncendido-margen);
-        double dApagadoRedondeoArriba = Math.ceil(d.tiempoApagado-margen);
+        System.out.println("Este es dEncendidoRedondeoAbajo: "+ dEncendidoRedondeoAbajo+"\n\n");
+        double dApagadoRedondeoArriba = Math.ceil(d.tiempoApagado+margen);
+        System.out.println("Este es dApagadoRedondeoArriba: "+ dApagadoRedondeoArriba+"\n\n");
         double dApagadoRedondeoAbajo = Math.floor(d.tiempoApagado-margen);
+        System.out.println("Este es dApagadoRedondeoAbajo: "+ dApagadoRedondeoAbajo+"\n\n");
+        */
+        System.out.print("Este es el valos booleano que devuelve comparador: ");
+        System.out.println(dEncendidoRedondeoAbajo <= tiempoEncendido  && dApagadoRedondeoAbajo <= tiempoApagado
+                && dEncendidoRedondeoArriba >= tiempoEncendido && dApagadoRedondeoArriba >= tiempoApagado);
         
+        return  dEncendidoRedondeoAbajo <= tiempoEncendido  && dApagadoRedondeoAbajo <= tiempoApagado
+                && dEncendidoRedondeoArriba >= tiempoEncendido && dApagadoRedondeoArriba >= tiempoApagado;
+        /*
+        System.out.println(encendidoRedondeoAbajo <= dEncendidoRedondeoAbajo && apagadoRedondeoAbajo >= dApagadoRedondeoAbajo
+                || encendidoRedondeoArriba <= dEncendidoRedondeoArriba && apagadoRedondeoArriba >= dApagadoRedondeoArriba);
         return encendidoRedondeoAbajo <= dEncendidoRedondeoAbajo && apagadoRedondeoAbajo >= dApagadoRedondeoAbajo
                 || encendidoRedondeoArriba <= dEncendidoRedondeoArriba && apagadoRedondeoArriba >= dApagadoRedondeoArriba;
+        */
     }
     
     public void setTiempoEncendido(Double tiempoEncendido) {
