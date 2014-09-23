@@ -181,7 +181,7 @@ public class Metodos {
         return destello;
     }
     
-    private static double tiempoTotal (ArrayList<Destello> destellos){
+    public static double tiempoTotal (ArrayList<Destello> destellos){
         double suma = 0;
         for (Destello d : destellos){
             suma += d.getTiempoApagado() + d.getTiempoEncendido();
@@ -189,10 +189,9 @@ public class Metodos {
         return suma;
     }
     
-    private static int numeroDeRepeticiones (ArrayList<Destello> destellos){
+    public static int numeroDeRepeticiones (ArrayList<Destello> destellos){
         int numeroDestellos = destellos.size();
         System.out.println(numeroDestellos);
         return numeroDestellos; 
     }
 }
-
