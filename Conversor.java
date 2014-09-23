@@ -38,6 +38,6 @@ public class Conversor {
         ArrayList<Resultado> calculoPorcentajes = a.calcularPorcentaje(resultadosPorRepeticiones);
         System.out.println("Faros filtrados segun mayor probabilidad:");
         System.out.println(calculoPorcentajes);
-        
+                
     }   
 }
