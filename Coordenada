@@ -1,0 +1,27 @@
+import java.io.Serializable;
+
+public class Coordenada<T> implements Serializable {
+    private T x;
+    private T y;
+
+    @Override
+    public String toString() {
+        return "[" + x + ", " + y + ']';
+    }
+
+    public void setX(T x) {
+        this.x = x;
+    }
+
+    public void setY(T y) {
+        this.y = y;
+    }
+
+    public T getX() {
+        return x;
+    }
+
+    public T getY() {
+        return y;
+    }
+}
