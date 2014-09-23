@@ -1,76 +1,66 @@
+
 import java.io.Serializable;
+import java.util.ArrayList;
+
 public class Faro implements Serializable {
     private String nombre;
-    private String longitud;
-    private String latitud;
     private String color;
-    private String repeticiones;
-    private double TiempoTotal;
-    private String coord_X;
-    private String coord_Y;
-    private double[] luz;
-    private double[] ocultacion;
+    private ArrayList<Double> indice;
+    private Coordenada<Double> coordenadaCartesiana;
+    private Coordenada<String> coordenadaRadial;
+    private ArrayList<Destello> destellos;
 
-    public Faro(String nombre, String longitud, String latitud, String coord_X,
-                String coord_Y, String repeticiones, String color,  
-                double[] ocultacion, double[] luz, double TiempoTotal) {
-        this.nombre  = nombre;
-        this.longitud = longitud;
-        this.latitud = latitud;
-        this.coord_X = coord_X;
-        this.coord_Y = coord_Y;
-        this.luz = luz;
-        this.ocultacion = ocultacion;
-        this.color = color;
-        this.repeticiones = repeticiones;
-        this.TiempoTotal = TiempoTotal;
-        
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
     
+    public void setIndice(ArrayList<Double>  indice) {
+        this.indice = indice;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public void setCoordenadaCartesiana(Coordenada<Double> coordenadaCartesiana) {
+        this.coordenadaCartesiana = coordenadaCartesiana;
+    }
+
+    public void setCoordenadaRadial(Coordenada<String> coordenadaRadial) {
+        this.coordenadaRadial = coordenadaRadial;
+    }
+
+    public void setDestellos(ArrayList<Destello> destellos) {
+        this.destellos = destellos;
+    }
+
     public String getNombre() {
         return nombre;
     }
 
-    public String getLongitud() {
-        return longitud;
-    }
-
-    public String getLatitud() {
-        return latitud;
-    }
-
-    public String getCoord_X() {
-        return coord_X;
-    }
-
-    public String getCoord_Y() {
-        return coord_Y;
-    }
-
-    public double[] getLuz() {
-        return luz;
-    }
-
-    public double[] getOcultacion() {
-        return ocultacion;
-    }
-    
     public String getColor() {
         return color;
     }
 
-    public String getRepeticiones() {
-        return repeticiones;
+    public ArrayList<Double> getIndice() {
+        return indice;
     }
-    
-    public double getTiempoTotal() {
-        return TiempoTotal;
+
+    public Coordenada<Double> getCoordenadaCartesiana() {
+        return coordenadaCartesiana;
     }
-    
+
+    public Coordenada<String> getCoordenadaRadial() {
+        return coordenadaRadial;
+    }
+
+    public ArrayList<Destello> getDestellos() {
+        return destellos;
+    }
+
+    @Override
     public String toString() {
-        return nombre+" "+longitud+" "+latitud+" "+coord_X+" "+coord_Y
-                +" "+luz+" "+ocultacion+" "+color+" "+repeticiones+" "+TiempoTotal;
+        return "[FARO: "+nombre+" / "+"COLOR: "+color+" / "+"COORDENADAS CARTESIANAS: "+coordenadaCartesiana+" / "+"COORDENADAS RADIALES: "+coordenadaRadial+" / "
+                +"CICLO: "+destellos+" / ";
     }
-
 }
-
