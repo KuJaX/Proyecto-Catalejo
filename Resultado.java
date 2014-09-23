@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 
 public class Resultado {
@@ -20,5 +19,10 @@ public class Resultado {
     
     public ArrayList<Double> getIndices() {
         return this.indicesDeCorrectitud;
+    }
+
+    @Override
+    public String toString() {
+        return "\n"+faro + " indices=" + indicesDeCorrectitud;
     }
 }
