@@ -1,0 +1,15 @@
+public class Dato {
+    public Double intensidad;
+        public Double variacion;
+        public Double momento;
+        
+        public Dato(Double i, Double v, Double m) {
+            intensidad = i;
+            variacion = v;
+            momento = m;
+        }
+        
+        public String toString() {
+            return "["+intensidad+", "+variacion+", "+momento+"]";
+        }
+}
